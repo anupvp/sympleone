@@ -1,0 +1,80 @@
+:root {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #e2e8f0;
+  background-color: #0f1419;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+a {
+  color: #38bdf8;
+}
+
+code {
+  font-size: 0.9em;
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.home {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.home-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.home-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.home-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.9375rem;
+}
+
+.home-user {
+  color: #94a3b8;
+}
+
+.home-logout {
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: transparent;
+  color: #e2e8f0;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.home-logout:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.home-main p {
+  color: #cbd5e1;
+}

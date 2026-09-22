@@ -1,0 +1,120 @@
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: radial-gradient(
+      ellipse 80% 60% at 50% -20%,
+      rgba(56, 189, 248, 0.15),
+      transparent
+    ),
+    #0f1419;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem 2rem 1.5rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
+}
+
+.login-brand {
+  margin-bottom: 1.75rem;
+  text-align: center;
+}
+
+.login-logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #f8fafc;
+}
+
+.login-tagline {
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+  color: #94a3b8;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  color: #cbd5e1;
+}
+
+.login-field input {
+  padding: 0.625rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.25);
+  color: #f1f5f9;
+  font-size: 1rem;
+}
+
+.login-field input:focus {
+  outline: 2px solid rgba(56, 189, 248, 0.5);
+  outline-offset: 0;
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+.login-field input:disabled {
+  opacity: 0.6;
+}
+
+.login-error {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: #fecaca;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.login-submit {
+  margin-top: 0.25rem;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #0f172a;
+  background: linear-gradient(180deg, #38bdf8, #0ea5e9);
+}
+
+.login-submit:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+
+.login-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.login-footer {
+  margin: 1.5rem 0 0;
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+.login-footer a {
+  color: #38bdf8;
+  text-decoration: none;
+}
+
+.login-footer a:hover {
+  text-decoration: underline;
+}
