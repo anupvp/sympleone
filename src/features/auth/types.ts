@@ -3,10 +3,13 @@ export interface LoginCredentials {
   password: string
 }
 
+export type UserRole = 'admin' | 'employee' | 'seller'
+
 export interface AuthUser {
   id: string
   email: string
   name?: string
+  role?: UserRole
 }
 
 export interface LoginResponse {

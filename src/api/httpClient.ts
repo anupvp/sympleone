@@ -1,4 +1,5 @@
 import { API_CONFIG, resolveApiUrl } from '../config/api.config'
+import { loadStoredAuth } from '../features/auth/authStorage'
 
 export class ApiError extends Error {
   readonly status: number
@@ -25,11 +26,37 @@ export interface RequestOptions {
 }
 
 function buildUrl(endpoint: string, rawPath: boolean): string {
+  if (endpoint.startsWith('http://') || endpoint.startsWith('https://')) {
+    return endpoint
+  }
   if (rawPath || endpoint.startsWith('/')) {
     const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`
     return `${API_CONFIG.baseUrl}${path}`
   }
   return resolveApiUrl(endpoint)
+}
+
+function resolveAuthToken(explicit?: string | null): string | null {
+  if (explicit) {
+    return explicit
+  }
+  return loadStoredAuth().accessToken
+}
+
+function errorMessageFromBody(parsed: unknown, status: number): string {
+  if (typeof parsed === 'object' && parsed !== null) {
+    const detail = (parsed as { detail?: unknown }).detail
+    if (typeof detail === 'string') {
+      return detail
+    }
+    if (Array.isArray(detail)) {
+      return detail.map((d) => JSON.stringify(d)).join('; ')
+    }
+    if ('message' in parsed && typeof (parsed as { message: unknown }).message === 'string') {
+      return (parsed as { message: string }).message
+    }
+  }
+  return `Request failed (${status})`
 }
 
 /**
@@ -47,8 +74,9 @@ export async function apiRequest<T>({
     ...API_CONFIG.defaultHeaders,
   }
 
-  if (token) {
-    headers.Authorization = `Bearer ${token}`
+  const authToken = resolveAuthToken(token)
+  if (authToken) {
+    headers.Authorization = `Bearer ${authToken}`
   }
 
   const controller = new AbortController()
@@ -73,14 +101,7 @@ export async function apiRequest<T>({
     }
 
     if (!response.ok) {
-      const message =
-        typeof parsed === 'object' &&
-        parsed !== null &&
-        'message' in parsed &&
-        typeof (parsed as { message: unknown }).message === 'string'
-          ? (parsed as { message: string }).message
-          : `Request failed (${response.status})`
-      throw new ApiError(message, response.status, parsed)
+      throw new ApiError(errorMessageFromBody(parsed, response.status), response.status, parsed)
     }
 
     return parsed as T

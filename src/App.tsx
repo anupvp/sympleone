@@ -1,21 +1,65 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { AdminRoute } from './app/AdminRoute'
 import { ProtectedRoute } from './app/ProtectedRoute'
+import { EmployeesAdminPage } from './features/admin/pages/EmployeesAdminPage'
+import { GroupsAdminPage } from './features/admin/pages/GroupsAdminPage'
+import { RolesAdminPage } from './features/admin/pages/RolesAdminPage'
+import { SellersAdminPage } from './features/admin/pages/SellersAdminPage'
 import { LoginPage } from './features/auth/LoginPage'
-import { HomePage } from './pages/HomePage'
-import { DashboardPage } from './pages/DashboardPage'
+import { DashboardPage } from './features/dashboard/DashboardPage'
+
+function AdminLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <ProtectedRoute>
+      <AdminRoute>{children}</AdminRoute>
+    </ProtectedRoute>
+  )
+}
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/login" element={<Navigate to="/" replace />} />
         <Route
           path="/dashboard"
           element={
             <ProtectedRoute>
               <DashboardPage />
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/employees"
+          element={
+            <AdminLayout>
+              <EmployeesAdminPage />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin/sellers"
+          element={
+            <AdminLayout>
+              <SellersAdminPage />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin/groups"
+          element={
+            <AdminLayout>
+              <GroupsAdminPage />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin/roles"
+          element={
+            <AdminLayout>
+              <RolesAdminPage />
+            </AdminLayout>
           }
         />
         <Route path="*" element={<Navigate to="/" replace />} />

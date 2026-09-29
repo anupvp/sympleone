@@ -1,0 +1,58 @@
+.seller-amazon-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(90deg, #fff7ed 0%, #fff 55%);
+  border-bottom: 1px solid #fed7aa;
+  color: #431407;
+}
+
+.seller-amazon-bar__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.8125rem;
+  max-width: 52rem;
+}
+
+.seller-amazon-bar__text strong {
+  font-size: 0.9375rem;
+}
+
+.seller-amazon-bar__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.seller-amazon-bar__error {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #b91c1c;
+  max-width: 220px;
+}
+
+.seller-amazon-bar__btn {
+  padding: 0.55rem 1.1rem;
+  border-radius: 8px;
+  border: none;
+  background: #ea580c;
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.seller-amazon-bar__btn:hover:not(:disabled) {
+  background: #c2410c;
+}
+
+.seller-amazon-bar__btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}

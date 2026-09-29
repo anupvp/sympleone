@@ -32,8 +32,38 @@ export const API_CONFIG = {
       me: '/auth/me',
       refresh: '/auth/refresh',
     },
+    dashboard: {
+      stats: '/dashboard/stats',
+      salesTrend: '/dashboard/sales-trend',
+      profitability: '/dashboard/profitability',
+      alerts: '/dashboard/alerts',
+      marketplaces: '/dashboard/marketplaces',
+    },
+    admin: {
+      employees: '/admin/employees',
+      sellers: '/admin/sellers',
+      groups: '/admin/groups',
+      roles: '/admin/roles',
+      policies: '/admin/policies',
+    },
+    amazon: {
+      connect: '/amazon/connect',
+    },
   },
 } as const
+
+/** Default Amazon.in marketplace — override with VITE_AMAZON_MARKETPLACE_ID */
+export const AMAZON_DEFAULT_MARKETPLACE_ID =
+  (env.VITE_AMAZON_MARKETPLACE_ID as string | undefined)?.trim() || 'A21TJRUUN4KGV'
+
+/** Path under baseUrl, e.g. apiPath('/admin/employees', 'abc') */
+export function apiPath(...parts: string[]): string {
+  const path = parts
+    .map((p) => p.replace(/^\/+|\/+$/g, ''))
+    .filter(Boolean)
+    .join('/')
+  return `/${path}`
+}
 
 export type ApiEndpoints = typeof API_CONFIG.endpoints
 

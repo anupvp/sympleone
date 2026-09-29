@@ -34,6 +34,8 @@ Expected login response shape:
 
 Adjust mapping in `authApi.ts` if your backend differs.
 
+**Relaxed login (no API yet):** set `VITE_AUTH_RELAXED=true` in `.env.local` (or rely on dev default). Any email/password signs you in. When the auth API is ready, set `VITE_AUTH_RELAXED=false` and rebuild.
+
 ## Local development
 
 ```bash
