@@ -37,7 +37,7 @@ export function AmazonOAuthCallbackPage() {
           state,
           selling_partner_id,
         })
-        window.location.replace(result.redirect_url)
+        window.location.replace(result.redirect_url || '/amazon/connect?amazon=error')
       } catch (err) {
         const message =
           err instanceof ApiError

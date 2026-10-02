@@ -148,7 +148,10 @@ export function AmazonSellerConnectPage() {
 
             {isError && (
               <p className="amazon-connect-card__error" role="alert">
-                Amazon authorization could not be completed. Please try again.
+                Amazon authorization could not be completed. This often means the
+                authorization link expired or was started on a different server than
+                the callback. Click Connect &amp; Authorize again from this page and
+                complete Amazon in one session.
               </p>
             )}
             {error && (

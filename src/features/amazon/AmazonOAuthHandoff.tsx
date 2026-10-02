@@ -1,7 +1,9 @@
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import {
+  amazonConnectResultRoute,
   amazonOAuthCallbackRoute,
+  hasAmazonConnectResultParams,
   hasAmazonOAuthCallbackParams,
 } from './amazonOAuthQuery'
 
@@ -15,6 +17,13 @@ export function AmazonOAuthHandoff() {
 
   useEffect(() => {
     if (location.pathname === '/amazon/callback') {
+      return
+    }
+    if (
+      location.pathname !== '/amazon/connect' &&
+      hasAmazonConnectResultParams(location.search)
+    ) {
+      navigate(amazonConnectResultRoute(location.search), { replace: true })
       return
     }
     if (!hasAmazonOAuthCallbackParams(location.search)) {
