@@ -1,0 +1,65 @@
+.amazon-oauth-callback-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: #f8fafc;
+}
+
+.amazon-oauth-callback-card {
+  max-width: 26rem;
+  width: 100%;
+  padding: 2rem 1.75rem;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  text-align: center;
+  box-shadow: 0 12px 32px rgb(15 23 42 / 0.08);
+}
+
+.amazon-oauth-callback-card h1 {
+  margin: 0 0 0.75rem;
+  font-size: 1.25rem;
+  color: #0f172a;
+}
+
+.amazon-oauth-callback-card p {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.amazon-oauth-callback-spinner {
+  width: 2.5rem;
+  height: 2.5rem;
+  margin: 1.5rem auto 0;
+  border-radius: 999px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #ea580c;
+  animation: amazon-oauth-callback-spin 0.8s linear infinite;
+}
+
+@keyframes amazon-oauth-callback-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.amazon-oauth-callback-error {
+  margin-top: 0.75rem !important;
+  color: #b91c1c !important;
+}
+
+.amazon-oauth-callback-link {
+  display: inline-block;
+  margin-top: 1.25rem;
+  font-weight: 600;
+  color: #ea580c;
+  text-decoration: none;
+}
+
+.amazon-oauth-callback-link:hover {
+  text-decoration: underline;
+}

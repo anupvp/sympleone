@@ -1,0 +1,162 @@
+.amazon-connect-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(ellipse at top, #fff7ed 0%, #f8fafc 45%, #f1f5f9 100%);
+  color: #0f172a;
+}
+
+.amazon-connect-page__header {
+  padding: 1.5rem 1.25rem;
+}
+
+.amazon-connect-page__logo {
+  display: block;
+  width: 7rem;
+  height: auto;
+  object-fit: contain;
+}
+
+.amazon-connect-page__main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1.25rem 3rem;
+}
+
+.amazon-connect-card {
+  width: 100%;
+  max-width: 28rem;
+  padding: 2rem 1.75rem;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  box-shadow:
+    0 4px 6px -1px rgb(15 23 42 / 0.06),
+    0 20px 40px -12px rgb(15 23 42 / 0.08);
+  text-align: center;
+}
+
+.amazon-connect-card--success {
+  border-color: #bbf7d0;
+  background: linear-gradient(180deg, #f0fdf4 0%, #fff 40%);
+}
+
+.amazon-connect-card__title {
+  margin: 0 0 1rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.amazon-connect-card__lead {
+  margin: 0 0 1rem;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: #475569;
+}
+
+.amazon-connect-card__bullets {
+  margin: 0 0 1.5rem;
+  padding: 0;
+  list-style: none;
+  font-size: 0.875rem;
+  color: #334155;
+}
+
+.amazon-connect-card__bullets li {
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+}
+
+.amazon-connect-card__meta {
+  margin: 0 0 1.25rem;
+  display: grid;
+  gap: 0.75rem;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.amazon-connect-card__meta div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.amazon-connect-card__meta dt {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.amazon-connect-card__meta dd {
+  margin: 0;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.amazon-connect-card__body {
+  margin: 0 0 1.5rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: #475569;
+}
+
+.amazon-connect-card__btn {
+  width: 100%;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  border: none;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.amazon-connect-card__btn--primary {
+  background: #ea580c;
+  color: #fff;
+}
+
+.amazon-connect-card__btn--primary:hover:not(:disabled) {
+  background: #c2410c;
+}
+
+.amazon-connect-card__btn:disabled {
+  opacity: 0.75;
+  cursor: wait;
+}
+
+.amazon-connect-card__error {
+  margin: 0 0 1rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 0.8125rem;
+  text-align: left;
+}
+
+.amazon-connect-card__hint {
+  margin: 1rem 0 0;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.amazon-connect-card__footer {
+  margin: 1.25rem 0 0;
+  font-size: 0.8125rem;
+}
+
+.amazon-connect-card__footer a {
+  color: #ea580c;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.amazon-connect-card__footer a:hover {
+  text-decoration: underline;
+}

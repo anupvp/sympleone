@@ -23,6 +23,8 @@ export interface RequestOptions {
   token?: string | null
   /** When true, endpoint is a path under baseUrl instead of a config key. */
   rawPath?: boolean
+  /** When true, never attach a stored session token (public endpoints). */
+  omitStoredAuth?: boolean
 }
 
 function buildUrl(endpoint: string, rawPath: boolean): string {
@@ -36,7 +38,13 @@ function buildUrl(endpoint: string, rawPath: boolean): string {
   return resolveApiUrl(endpoint)
 }
 
-function resolveAuthToken(explicit?: string | null): string | null {
+function resolveAuthToken(
+  explicit?: string | null,
+  omitStoredAuth = false,
+): string | null {
+  if (omitStoredAuth) {
+    return explicit ?? null
+  }
   if (explicit) {
     return explicit
   }
@@ -68,13 +76,14 @@ export async function apiRequest<T>({
   body,
   token,
   rawPath = false,
+  omitStoredAuth = false,
 }: RequestOptions): Promise<T> {
   const url = buildUrl(endpoint, rawPath)
   const headers: Record<string, string> = {
     ...API_CONFIG.defaultHeaders,
   }
 
-  const authToken = resolveAuthToken(token)
+  const authToken = resolveAuthToken(token, omitStoredAuth)
   if (authToken) {
     headers.Authorization = `Bearer ${authToken}`
   }

@@ -1,6 +1,10 @@
 import { type FormEvent, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
+import { AMAZON_DEFAULT_MARKETPLACE_ID } from '../../config/api.config'
+import { ApiError } from '../../api/httpClient'
+import { hasRealApiAccessToken } from '../amazon/amazonAuth'
+import { startAmazonConnect } from '../amazon/amazonApi'
 import { clearAuthError, login } from './authSlice'
 import {
   DEFAULT_REMEMBER_ME,
@@ -8,6 +12,8 @@ import {
   persistLoginEmail,
 } from './loginRememberStorage'
 import './LoginPage.css'
+
+type LoginPanelMode = 'connect' | 'employee' | 'admin'
 
 export function LoginPage() {
   const dispatch = useAppDispatch()
@@ -19,6 +25,9 @@ export function LoginPage() {
   const [email, setEmail] = useState(() => loadAnySavedEmail())
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [panelMode, setPanelMode] = useState<LoginPanelMode>('connect')
+  const [amazonLoading, setAmazonLoading] = useState(false)
+  const [amazonError, setAmazonError] = useState<string | null>(null)
 
   const from =
     (location.state as { from?: { pathname?: string } } | null)?.from
@@ -59,6 +68,35 @@ export function LoginPage() {
 
   const loading = status === 'loading'
 
+  const onAmazonConnect = async () => {
+    setAmazonError(null)
+    setAmazonLoading(true)
+    try {
+      const signedIn = hasRealApiAccessToken(accessToken)
+      const { authorization_url } = await startAmazonConnect(
+        AMAZON_DEFAULT_MARKETPLACE_ID,
+        signedIn
+          ? { accessToken, omitStoredAuth: false }
+          : { omitStoredAuth: true },
+      )
+      window.location.assign(authorization_url)
+    } catch (err) {
+      const message =
+        err instanceof ApiError
+          ? err.message
+          : err instanceof Error
+            ? err.message
+            : 'Could not start Amazon authorization'
+      setAmazonError(message)
+      setAmazonLoading(false)
+    }
+  }
+
+  const loginSubtitle =
+    panelMode === 'admin'
+      ? 'Sign in with your Symple owner (admin) account.'
+      : 'Sign in with your employee workspace account.'
+
   return (
     <div className="login-page">
       <aside className="login-hero" aria-hidden={false}>
@@ -66,10 +104,10 @@ export function LoginPage() {
         <div className="login-hero__content">
           <img
             className="login-hero__logo"
-            src="/symple-logo.svg"
+            src="/symple-logo.png"
             alt="Symple"
-            width={120}
-            height={28}
+            width={112}
+            height={112}
           />
 
           <p className="login-hero__eyebrow">UNIFIED COMMERCE OPERATIONS</p>
@@ -95,15 +133,70 @@ export function LoginPage() {
 
       <section className="login-panel">
         <div className="login-panel__inner">
-          <header className="login-panel__header">
-            <p className="login-panel__eyebrow">SECURE WORKSPACE</p>
-            <h2 className="login-panel__title">Welcome back</h2>
-            <p className="login-panel__subtitle">
-              Sign in to your SympleOne workspace.
-            </p>
-          </header>
+          <nav className="login-panel__nav" aria-label="Sign-in options">
+            <button
+              type="button"
+              className={`login-panel__nav-link${panelMode === 'employee' ? ' login-panel__nav-link--active' : ''}`}
+              onClick={() => {
+                setPanelMode('employee')
+                setAmazonError(null)
+                dispatch(clearAuthError())
+              }}
+            >
+              Employee Login
+            </button>
+            <button
+              type="button"
+              className={`login-panel__nav-link${panelMode === 'admin' ? ' login-panel__nav-link--active' : ''}`}
+              onClick={() => {
+                setPanelMode('admin')
+                setAmazonError(null)
+                dispatch(clearAuthError())
+              }}
+            >
+              Admin Login
+            </button>
+          </nav>
 
-          <form className="login-form" onSubmit={onSubmit}>
+          {panelMode === 'connect' ? (
+            <>
+              <header className="login-panel__header">
+                <p className="login-panel__eyebrow">AMAZON SELLER</p>
+                <h2 className="login-panel__title">Connect Your Amazon Seller Account</h2>
+                <p className="login-panel__subtitle">
+                  Connect Amazon to synchronize your orders, inventory and products with
+                  Symple One.
+                </p>
+              </header>
+
+              <p className="login-connect__hint">
+                Manage orders, inventory and products in Symple One
+              </p>
+
+              {amazonError && (
+                <p className="login-error" role="alert">
+                  {amazonError}
+                </p>
+              )}
+
+              <button
+                type="button"
+                className="login-submit login-submit--amazon"
+                disabled={amazonLoading}
+                onClick={() => void onAmazonConnect()}
+              >
+                {amazonLoading ? 'Redirecting…' : 'Connect & Authorize'}
+              </button>
+            </>
+          ) : (
+            <>
+              <header className="login-panel__header">
+                <p className="login-panel__eyebrow">SECURE WORKSPACE</p>
+                <h2 className="login-panel__title">Welcome back</h2>
+                <p className="login-panel__subtitle">{loginSubtitle}</p>
+              </header>
+
+              <form className="login-form" onSubmit={onSubmit}>
             <label className="login-field">
               <span className="login-field__label">Work email</span>
               <input
@@ -164,11 +257,26 @@ export function LoginPage() {
               </p>
             )}
 
-            <button type="submit" className="login-submit" disabled={loading}>
-              {loading ? 'Signing in…' : 'Sign in to dashboard'}
-              {!loading && <span className="login-submit__chevron" aria-hidden>›</span>}
-            </button>
-          </form>
+                <button type="submit" className="login-submit" disabled={loading}>
+                  {loading ? 'Signing in…' : 'Sign in to dashboard'}
+                  {!loading && (
+                    <span className="login-submit__chevron" aria-hidden>›</span>
+                  )}
+                </button>
+              </form>
+
+              <button
+                type="button"
+                className="login-connect-back"
+                onClick={() => {
+                  setPanelMode('connect')
+                  dispatch(clearAuthError())
+                }}
+              >
+                ← Amazon seller connect
+              </button>
+            </>
+          )}
 
           <p className="login-security">
             <svg

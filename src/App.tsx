@@ -6,6 +6,8 @@ import { GroupsAdminPage } from './features/admin/pages/GroupsAdminPage'
 import { RolesAdminPage } from './features/admin/pages/RolesAdminPage'
 import { SellersAdminPage } from './features/admin/pages/SellersAdminPage'
 import { LoginPage } from './features/auth/LoginPage'
+import { AmazonOAuthCallbackPage } from './features/amazon/AmazonOAuthCallbackPage'
+import { AmazonSellerConnectPage } from './features/amazon/AmazonSellerConnectPage'
 import { DashboardPage } from './features/dashboard/DashboardPage'
 
 function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -22,6 +24,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<Navigate to="/" replace />} />
+        <Route path="/amazon/connect" element={<AmazonSellerConnectPage />} />
+        <Route path="/amazon/callback" element={<AmazonOAuthCallbackPage />} />
         <Route
           path="/dashboard"
           element={

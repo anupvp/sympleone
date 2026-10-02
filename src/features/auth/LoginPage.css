@@ -80,7 +80,9 @@
 
 .login-hero__logo {
   display: block;
+  width: 7rem;
   height: auto;
+  object-fit: contain;
 }
 
 .login-hero__eyebrow {
@@ -155,6 +157,72 @@
 .login-panel__inner {
   width: 100%;
   max-width: 400px;
+}
+
+.login-panel__nav {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.login-panel__nav-link {
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.login-panel__nav-link:hover {
+  color: #0d9488;
+}
+
+.login-panel__nav-link--active {
+  color: #0d9488;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.login-connect__hint {
+  margin: 0 0 1.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: #334155;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+}
+
+.login-submit--amazon {
+  background: #ea580c;
+}
+
+.login-submit--amazon:hover:not(:disabled) {
+  background: #c2410c;
+}
+
+.login-connect-back {
+  display: block;
+  width: 100%;
+  margin-top: 1rem;
+  border: none;
+  background: none;
+  padding: 0.5rem 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  text-align: center;
+}
+
+.login-connect-back:hover {
+  color: #0d9488;
 }
 
 .login-panel__eyebrow {

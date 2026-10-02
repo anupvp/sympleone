@@ -21,8 +21,8 @@ export function SellerAmazonAuthorizeBar() {
     setLoading(true)
     try {
       const { authorization_url } = await startAmazonConnect(
-        accessToken,
         AMAZON_DEFAULT_MARKETPLACE_ID,
+        { accessToken },
       )
       window.location.assign(authorization_url)
     } catch (err) {

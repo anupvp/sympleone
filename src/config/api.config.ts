@@ -48,6 +48,7 @@ export const API_CONFIG = {
     },
     amazon: {
       connect: '/amazon/connect',
+      callbackComplete: '/amazon/callback/complete',
     },
   },
 } as const
