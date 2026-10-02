@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { AMAZON_DEFAULT_MARKETPLACE_ID } from '../../config/api.config'
 import { ApiError } from '../../api/httpClient'
 import { hasRealApiAccessToken } from '../amazon/amazonAuth'
+import { hasAmazonOAuthCallbackParams } from '../amazon/amazonOAuthQuery'
 import { startAmazonConnect } from '../amazon/amazonApi'
 import { clearAuthError, login } from './authSlice'
 import {
@@ -34,10 +35,13 @@ export function LoginPage() {
       ?.pathname ?? '/dashboard'
 
   useEffect(() => {
+    if (hasAmazonOAuthCallbackParams(location.search)) {
+      return
+    }
     if (accessToken) {
       navigate(from, { replace: true })
     }
-  }, [accessToken, from, navigate])
+  }, [accessToken, from, location.search, navigate])
 
   useEffect(() => {
     return () => {
