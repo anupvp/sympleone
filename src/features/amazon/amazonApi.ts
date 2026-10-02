@@ -1,5 +1,6 @@
 import { apiRequest } from '../../api/httpClient'
 import { API_CONFIG } from '../../config/api.config'
+import type { AuthUser } from '../auth/types'
 
 export interface AmazonConnectResponse {
   authorization_url: string
@@ -12,9 +13,17 @@ export interface StartAmazonConnectOptions {
   omitStoredAuth?: boolean
 }
 
+export interface AmazonSellerNewAccount {
+  email: string
+  password: string
+}
+
 export interface AmazonCallbackCompleteResponse {
   redirect_url: string
   success: boolean
+  accessToken?: string | null
+  user?: AuthUser | null
+  newAccount?: AmazonSellerNewAccount | null
 }
 
 export interface AmazonCallbackCompleteRequest {

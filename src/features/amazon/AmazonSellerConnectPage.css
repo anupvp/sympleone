@@ -72,6 +72,60 @@
   border: 1px dashed #cbd5e1;
 }
 
+.amazon-connect-card__credentials {
+  margin: 0 0 1.25rem;
+  padding: 1rem 1.1rem;
+  border-radius: 12px;
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  text-align: left;
+}
+
+.amazon-connect-card__credentials-title {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #92400e;
+}
+
+.amazon-connect-card__credentials-hint {
+  margin: 0 0 0.75rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: #78350f;
+}
+
+.amazon-connect-card__credentials-list {
+  margin: 0;
+  display: grid;
+  gap: 0.65rem;
+  font-size: 0.875rem;
+}
+
+.amazon-connect-card__credentials-list dt {
+  font-weight: 600;
+  color: #57534e;
+}
+
+.amazon-connect-card__credentials-list dd {
+  margin: 0.15rem 0 0;
+}
+
+.amazon-connect-card__credentials-list code {
+  display: block;
+  padding: 0.45rem 0.55rem;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid #e7e5e4;
+  font-size: 0.8125rem;
+  word-break: break-all;
+}
+
+.amazon-connect-card__body--muted {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
 .amazon-connect-card__meta {
   margin: 0 0 1.25rem;
   display: grid;

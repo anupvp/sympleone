@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { hydrateSession } from '../auth/authSlice'
+import { establishSession, hydrateSession } from '../auth/authSlice'
+import {
+  clearAmazonOnboarding,
+  loadAmazonOnboarding,
+  type AmazonOnboardingPayload,
+} from './amazonOnboardingStorage'
 import { AMAZON_DEFAULT_MARKETPLACE_ID } from '../../config/api.config'
 import { ApiError } from '../../api/httpClient'
 import { hasRealApiAccessToken } from './amazonAuth'
@@ -37,6 +42,9 @@ export function AmazonSellerConnectPage() {
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [onboarding, setOnboarding] = useState<AmazonOnboardingPayload | null>(
+    null,
+  )
 
   const amazonStatus = searchParams.get('amazon')
   const sellingPartnerId = searchParams.get('selling_partner_id')
@@ -48,9 +56,19 @@ export function AmazonSellerConnectPage() {
   const isError = amazonStatus === 'error'
 
   const sellerName = useMemo(
-    () => sellerDisplayName(sellingPartnerId, user?.name),
-    [sellingPartnerId, user?.name],
+    () =>
+      sellerDisplayName(
+        sellingPartnerId,
+        onboarding?.user?.name ?? user?.name,
+      ),
+    [sellingPartnerId, onboarding?.user?.name, user?.name],
   )
+
+  useEffect(() => {
+    if (isSuccess) {
+      setOnboarding(loadAmazonOnboarding(sellingPartnerId))
+    }
+  }, [isSuccess, sellingPartnerId])
 
   const clearOAuthQuery = useCallback(() => {
     const next = new URLSearchParams(searchParams)
@@ -85,6 +103,16 @@ export function AmazonSellerConnectPage() {
   }
 
   const onContinue = () => {
+    const session = onboarding ?? loadAmazonOnboarding(sellingPartnerId)
+    if (session?.accessToken && session.user) {
+      dispatch(
+        establishSession({
+          accessToken: session.accessToken,
+          user: session.user,
+        }),
+      )
+    }
+    clearAmazonOnboarding()
     clearOAuthQuery()
     navigate('/dashboard')
   }
@@ -123,6 +151,45 @@ export function AmazonSellerConnectPage() {
             <p className="amazon-connect-card__body">
               Your Amazon account is now connected to Symple One.
             </p>
+            {onboarding?.newAccount ? (
+              <div
+                className="amazon-connect-card__credentials"
+                aria-labelledby="amazon-credentials-title"
+              >
+                <h2 id="amazon-credentials-title" className="amazon-connect-card__credentials-title">
+                  Your Symple One login
+                </h2>
+                <p className="amazon-connect-card__credentials-hint">
+                  Save these credentials — the password is shown only once. You will
+                  use them to sign in after leaving this page.
+                </p>
+                <dl className="amazon-connect-card__credentials-list">
+                  <div>
+                    <dt>Email</dt>
+                    <dd>
+                      <code>{onboarding.newAccount.email}</code>
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Password</dt>
+                    <dd>
+                      <code>{onboarding.newAccount.password}</code>
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+            ) : onboarding?.user?.email ? (
+              <p className="amazon-connect-card__body amazon-connect-card__body--muted">
+                Signed in as <strong>{onboarding.user.email}</strong>. Click Continue
+                to open your dashboard.
+              </p>
+            ) : (
+              <p className="amazon-connect-card__body amazon-connect-card__body--muted">
+                Click Continue to open your dashboard. If you are not signed in, use
+                the email and password shown right after authorization (or sign in from
+                the home page).
+              </p>
+            )}
             <button
               type="button"
               className="amazon-connect-card__btn amazon-connect-card__btn--primary"

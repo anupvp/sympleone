@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { API_CONFIG } from '../../config/api.config'
 import { ApiError } from '../../api/httpClient'
 import { completeAmazonOAuthCallback } from './amazonApi'
+import { saveAmazonOnboarding } from './amazonOnboardingStorage'
 import { parseAmazonOAuthCallbackParams } from './amazonOAuthQuery'
 import './AmazonOAuthCallbackPage.css'
 
@@ -41,6 +42,18 @@ export function AmazonOAuthCallbackPage() {
         if (!result.redirect_url) {
           redirectToConnectError('missing_redirect')
           return
+        }
+        if (
+          result.success &&
+          result.accessToken &&
+          result.user?.id
+        ) {
+          saveAmazonOnboarding({
+            sellingPartnerId: parsed.selling_partner_id,
+            accessToken: result.accessToken,
+            user: result.user,
+            newAccount: result.newAccount ?? undefined,
+          })
         }
         window.location.replace(result.redirect_url)
       } catch (err) {
