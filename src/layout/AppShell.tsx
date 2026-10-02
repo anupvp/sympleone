@@ -1,7 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../app/hooks'
 import { logout } from '../features/auth/authSlice'
-import { SellerAmazonAuthorizeBar } from '../features/amazon/SellerAmazonAuthorizeBar'
 import { isAdminUser, roleLabel } from '../features/auth/auth.utils'
 import './AppShell.css'
 
@@ -75,7 +74,6 @@ export function AppShell({ children, toolbar }: AppShellProps) {
           </button>
         </div>
       </header>
-      <SellerAmazonAuthorizeBar />
       <main className="app-shell__main">{children}</main>
     </div>
   )
