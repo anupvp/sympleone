@@ -1,10 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { API_CONFIG } from '../../config/api.config'
 import { ApiError } from '../../api/httpClient'
 import { completeAmazonOAuthCallback } from './amazonApi'
+import { parseAmazonOAuthCallbackParams } from './amazonOAuthQuery'
 import './AmazonOAuthCallbackPage.css'
 
 type Phase = 'loading' | 'error'
+
+function redirectToConnectError(reason: string) {
+  const url = `/amazon/connect?amazon=error&reason=${encodeURIComponent(reason)}`
+  window.location.replace(url)
+}
 
 export function AmazonOAuthCallbackPage() {
   const [searchParams] = useSearchParams()
@@ -18,26 +25,24 @@ export function AmazonOAuthCallbackPage() {
     }
     started.current = true
 
-    const spapi_oauth_code = searchParams.get('spapi_oauth_code')
-    const state = searchParams.get('state')
-    const selling_partner_id = searchParams.get('selling_partner_id')
-
-    if (!spapi_oauth_code || !state || !selling_partner_id) {
+    const parsed = parseAmazonOAuthCallbackParams(searchParams.toString())
+    if (!parsed) {
+      const keys = [...searchParams.keys()].join(', ') || '(none)'
       setPhase('error')
       setErrorMessage(
-        'Missing Amazon authorization parameters. Start again from Connect & Authorize.',
+        `Amazon did not return the expected parameters (spapi_oauth_code, state, selling_partner_id). Received keys: ${keys}.`,
       )
       return
     }
 
     void (async () => {
       try {
-        const result = await completeAmazonOAuthCallback({
-          spapi_oauth_code,
-          state,
-          selling_partner_id,
-        })
-        window.location.replace(result.redirect_url || '/amazon/connect?amazon=error')
+        const result = await completeAmazonOAuthCallback(parsed)
+        if (!result.redirect_url) {
+          redirectToConnectError('missing_redirect')
+          return
+        }
+        window.location.replace(result.redirect_url)
       } catch (err) {
         const message =
           err instanceof ApiError
@@ -46,7 +51,9 @@ export function AmazonOAuthCallbackPage() {
               ? err.message
               : 'Could not complete Amazon authorization'
         setPhase('error')
-        setErrorMessage(message)
+        setErrorMessage(
+          `${message} (API: ${API_CONFIG.baseUrl}). Check that the frontend was built with the correct VITE_API_BASE_URL and that the API is running.`,
+        )
       }
     })()
   }, [searchParams])

@@ -1,14 +1,32 @@
 /** Amazon SP-API website authorization query params on redirect from Seller Central. */
 
-export function hasAmazonOAuthCallbackParams(search: string): boolean {
+export interface AmazonOAuthCallbackParams {
+  spapi_oauth_code: string
+  state: string
+  selling_partner_id: string
+}
+
+export function parseAmazonOAuthCallbackParams(
+  search: string,
+): AmazonOAuthCallbackParams | null {
   const params = new URLSearchParams(
     search.startsWith('?') ? search.slice(1) : search,
   )
-  return Boolean(
-    params.get('spapi_oauth_code')?.trim() &&
-      params.get('state')?.trim() &&
-      params.get('selling_partner_id')?.trim(),
-  )
+  const spapi_oauth_code =
+    params.get('spapi_oauth_code')?.trim() ||
+    params.get('code')?.trim() ||
+    ''
+  const state = params.get('state')?.trim() || ''
+  const selling_partner_id = params.get('selling_partner_id')?.trim() || ''
+
+  if (!spapi_oauth_code || !state || !selling_partner_id) {
+    return null
+  }
+  return { spapi_oauth_code, state, selling_partner_id }
+}
+
+export function hasAmazonOAuthCallbackParams(search: string): boolean {
+  return parseAmazonOAuthCallbackParams(search) !== null
 }
 
 export function amazonOAuthCallbackRoute(search: string): string {

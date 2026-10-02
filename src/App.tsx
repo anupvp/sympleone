@@ -7,6 +7,7 @@ import { RolesAdminPage } from './features/admin/pages/RolesAdminPage'
 import { SellersAdminPage } from './features/admin/pages/SellersAdminPage'
 import { LoginPage } from './features/auth/LoginPage'
 import { AmazonOAuthHandoff } from './features/amazon/AmazonOAuthHandoff'
+import { AmazonOAuthRouteFallback } from './features/amazon/AmazonOAuthRouteFallback'
 import { AmazonOAuthCallbackPage } from './features/amazon/AmazonOAuthCallbackPage'
 import { AmazonSellerConnectPage } from './features/amazon/AmazonSellerConnectPage'
 import { DashboardPage } from './features/dashboard/DashboardPage'
@@ -68,7 +69,7 @@ export default function App() {
             </AdminLayout>
           }
         />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<AmazonOAuthRouteFallback />} />
       </Routes>
     </BrowserRouter>
   )

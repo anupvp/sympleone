@@ -43,6 +43,7 @@ export function AmazonSellerConnectPage() {
   const marketplaceId =
     searchParams.get('marketplace_id') ?? AMAZON_DEFAULT_MARKETPLACE_ID
 
+  const errorReason = searchParams.get('reason')
   const isSuccess = amazonStatus === 'connected'
   const isError = amazonStatus === 'error'
 
@@ -149,9 +150,11 @@ export function AmazonSellerConnectPage() {
             {isError && (
               <p className="amazon-connect-card__error" role="alert">
                 Amazon authorization could not be completed. This often means the
-                authorization link expired or was started on a different server than
-                the callback. Click Connect &amp; Authorize again from this page and
-                complete Amazon in one session.
+                authorization link expired or was started on a different API than
+                the one completing the callback (use the same Render API for the whole
+                flow). Click Connect &amp; Authorize again and confirm on Amazon within
+                a few minutes.
+                {errorReason ? ` (${errorReason})` : ''}
               </p>
             )}
             {error && (
