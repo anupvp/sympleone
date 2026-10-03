@@ -29,8 +29,14 @@ export interface StatCardData {
 
 export interface SalesTrendPoint {
   date: string
+  /** Net sales in chart units (lakhs for INR). */
   netSales: number
+  /** Raw net sales in store currency for tooltips. */
+  netSalesAmount: number
   previousPeriod: number
+  previousPeriodAmount: number
+  orderCount: number
+  previousPeriodOrderCount: number
 }
 
 export interface SalesTrendData {
