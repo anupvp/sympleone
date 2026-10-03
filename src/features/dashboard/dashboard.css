@@ -300,8 +300,11 @@
   stroke: #f1f5f9;
 }
 
-.line-chart__axis,
 .line-chart__label {
+  font-size: 9px;
+}
+
+.line-chart__axis {
   fill: #94a3b8;
   font-size: 9px;
 }
