@@ -17,19 +17,32 @@ import type {
   SalesTrendData,
   StatCardData,
 } from '../types/dashboard.types'
+import {
+  currentMonthYear,
+  resolveSalesDateRange,
+  todayIsoDate,
+} from '../utils/salesPeriodUtils'
 
-function currentMonthRange(): Pick<DashboardFilters, 'dateFrom' | 'dateTo'> {
-  const now = new Date()
-  const start = new Date(now.getFullYear(), now.getMonth(), 1)
-  const end = new Date(now.getFullYear(), now.getMonth() + 1, 0)
-  const toIso = (d: Date) => d.toISOString().slice(0, 10)
-  return { dateFrom: toIso(start), dateTo: toIso(end) }
-}
+const { salesMonth, salesYear } = currentMonthYear()
+const initialRange = resolveSalesDateRange({
+  accountId: 'all',
+  marketplaceId: 'A21TJRUUN4KGV',
+  salesPeriodMode: 'monthly',
+  salesDailyDate: todayIsoDate(),
+  salesMonth,
+  salesYear,
+  dateFrom: '',
+  dateTo: '',
+})
 
 const defaultFilters: DashboardFilters = {
   accountId: 'all',
   marketplaceId: 'A21TJRUUN4KGV',
-  ...currentMonthRange(),
+  salesPeriodMode: 'monthly',
+  salesDailyDate: todayIsoDate(),
+  salesMonth,
+  salesYear,
+  ...initialRange,
 }
 
 function emptyModule<T>(): DashboardModuleState<T> {
@@ -103,7 +116,9 @@ const dashboardSlice = createSlice({
   initialState,
   reducers: {
     setFilters(state, action: PayloadAction<Partial<DashboardFilters>>) {
-      state.filters = { ...state.filters, ...action.payload }
+      const merged = { ...state.filters, ...action.payload }
+      const range = resolveSalesDateRange(merged)
+      state.filters = { ...merged, dateFrom: range.dateFrom, dateTo: range.dateTo }
     },
   },
   extraReducers: (builder) => {

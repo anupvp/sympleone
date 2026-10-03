@@ -1,9 +1,17 @@
+export type SalesPeriodMode = 'daily' | 'monthly' | 'dateRange'
+
 /** Filter context sent to dashboard read APIs (query params). */
 export interface DashboardFilters {
   accountId: string
   marketplaceId: string
   dateFrom: string
   dateTo: string
+  salesPeriodMode: SalesPeriodMode
+  /** ISO date (YYYY-MM-DD) when salesPeriodMode is daily */
+  salesDailyDate: string
+  /** 1–12 when salesPeriodMode is monthly */
+  salesMonth: number
+  salesYear: number
 }
 
 export type StatAccent = 'purple' | 'blue' | 'green' | 'amber'

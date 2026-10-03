@@ -1,4 +1,5 @@
 import { ModuleFrame } from '../../components/ModuleFrame'
+import { SalesTrendPeriodControl } from '../../components/SalesTrendPeriodControl'
 import type { DashboardModuleState, SalesTrendData } from '../../types/dashboard.types'
 
 interface SalesTrendModuleProps {
@@ -66,13 +67,7 @@ export function SalesTrendModule({ module }: SalesTrendModuleProps) {
       status={module.status}
       error={module.error}
       className="chart-card"
-      action={
-        data ? (
-          <select className="dash-select dash-select--sm" defaultValue={data.frequency} aria-label="Frequency">
-            <option>{data.frequency}</option>
-          </select>
-        ) : null
-      }
+      action={<SalesTrendPeriodControl />}
     >
       <div className="chart-legend">
         <span><i className="dot dot--primary" /> Orders</span>

@@ -1,5 +1,6 @@
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
 import { setFilters } from '../state/dashboardSlice'
+import { formatSalesPeriodLabel } from '../utils/salesPeriodUtils'
 
 export function DashboardToolbar() {
   const dispatch = useAppDispatch()
@@ -23,7 +24,7 @@ export function DashboardToolbar() {
       >
         <option value="all">All Marketplaces</option>
       </select>
-      <span className="dash-date">May 1 – May 21, 2024</span>
+      <span className="dash-date">{formatSalesPeriodLabel(filters)}</span>
     </div>
   )
 }

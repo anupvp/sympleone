@@ -1,0 +1,124 @@
+.sales-period {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.sales-period__mode {
+  min-width: 6.5rem;
+}
+
+.sales-period__date-input {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.2rem 0.45rem;
+  font-size: 0.8125rem;
+  color: #334155;
+  background: #fff;
+}
+
+.sales-period__monthly {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.sales-period__range {
+  position: relative;
+}
+
+.sales-period__range-trigger {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.8125rem;
+  background: #fff;
+  color: #334155;
+  cursor: pointer;
+  max-width: 14rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sales-period__range-trigger:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.sales-period__popover {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  z-index: 30;
+  min-width: 16rem;
+  padding: 0.85rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  box-shadow:
+    0 10px 15px -3px rgb(15 23 42 / 0.08),
+    0 4px 6px -4px rgb(15 23 42 / 0.06);
+}
+
+.sales-period__popover-title {
+  margin: 0 0 0.65rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.sales-period__field {
+  display: grid;
+  gap: 0.25rem;
+  margin-bottom: 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.sales-period__field input {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.4rem 0.5rem;
+  font-size: 0.8125rem;
+}
+
+.sales-period__preview {
+  margin: 0 0 0.65rem;
+  font-size: 0.75rem;
+  color: #475569;
+}
+
+.sales-period__popover-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.sales-period__btn {
+  border-radius: 8px;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.sales-period__btn--ghost {
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #475569;
+}
+
+.sales-period__btn--primary {
+  border: none;
+  background: #6366f1;
+  color: #fff;
+}
+
+.sales-period__btn--primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
