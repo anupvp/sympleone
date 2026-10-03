@@ -18,11 +18,18 @@ import type {
   StatCardData,
 } from '../types/dashboard.types'
 
+function currentMonthRange(): Pick<DashboardFilters, 'dateFrom' | 'dateTo'> {
+  const now = new Date()
+  const start = new Date(now.getFullYear(), now.getMonth(), 1)
+  const end = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+  const toIso = (d: Date) => d.toISOString().slice(0, 10)
+  return { dateFrom: toIso(start), dateTo: toIso(end) }
+}
+
 const defaultFilters: DashboardFilters = {
   accountId: 'all',
-  marketplaceId: 'all',
-  dateFrom: '2024-05-01',
-  dateTo: '2024-05-21',
+  marketplaceId: 'A21TJRUUN4KGV',
+  ...currentMonthRange(),
 }
 
 function emptyModule<T>(): DashboardModuleState<T> {
@@ -48,8 +55,14 @@ export const loadDashboard = createAsyncThunk(
     }
     const filters = state.dashboard.filters
 
-    const [stats, salesTrend, profitability, alerts, marketplaces] =
-      await Promise.all([
+    const emptySalesTrend: SalesTrendData = {
+      frequency: 'Daily',
+      currencySymbol: '₹',
+      points: [],
+    }
+
+    const [statsR, salesR, profitabilityR, alertsR, marketplacesR] =
+      await Promise.allSettled([
         fetchStatCards(token, filters),
         fetchSalesTrend(token, filters),
         fetchProfitability(token, filters),
@@ -57,7 +70,31 @@ export const loadDashboard = createAsyncThunk(
         fetchMarketplaces(token, filters),
       ])
 
-    return { stats, salesTrend, profitability, alerts, marketplaces }
+    const salesTrendError =
+      salesR.status === 'rejected'
+        ? salesR.reason instanceof Error
+          ? salesR.reason.message
+          : 'Failed to load sales trend'
+        : null
+
+    return {
+      stats: statsR.status === 'fulfilled' ? statsR.value : [],
+      salesTrend:
+        salesR.status === 'fulfilled' ? salesR.value : emptySalesTrend,
+      salesTrendError,
+      profitability:
+        profitabilityR.status === 'fulfilled'
+          ? profitabilityR.value
+          : {
+              centerLabel: 'Net Profit',
+              centerValue: '—',
+              segments: [],
+              netProfit: { label: 'Net Profit', amount: '—', percent: 0 },
+            },
+      alerts: alertsR.status === 'fulfilled' ? alertsR.value : [],
+      marketplaces:
+        marketplacesR.status === 'fulfilled' ? marketplacesR.value : [],
+    }
   },
 )
 
@@ -83,7 +120,12 @@ const dashboardSlice = createSlice({
         const now = Date.now()
         const success = { status: 'success' as const, error: null, lastFetchedAt: now }
         state.stats = { data: action.payload.stats, ...success }
-        state.salesTrend = { data: action.payload.salesTrend, ...success }
+        state.salesTrend = {
+          data: action.payload.salesTrend,
+          status: 'success',
+          error: action.payload.salesTrendError,
+          lastFetchedAt: now,
+        }
         state.profitability = { data: action.payload.profitability, ...success }
         state.alerts = { data: action.payload.alerts, ...success }
         state.marketplaces = { data: action.payload.marketplaces, ...success }

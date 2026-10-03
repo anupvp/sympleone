@@ -10,6 +10,7 @@ import { AmazonOAuthHandoff } from './features/amazon/AmazonOAuthHandoff'
 import { AmazonOAuthRouteFallback } from './features/amazon/AmazonOAuthRouteFallback'
 import { AmazonOAuthCallbackPage } from './features/amazon/AmazonOAuthCallbackPage'
 import { AmazonSellerConnectPage } from './features/amazon/AmazonSellerConnectPage'
+import { ChangePasswordPage } from './features/account/ChangePasswordPage'
 import { DashboardPage } from './features/dashboard/DashboardPage'
 
 function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -34,6 +35,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/account/password"
+          element={
+            <ProtectedRoute>
+              <ChangePasswordPage />
             </ProtectedRoute>
           }
         />

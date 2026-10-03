@@ -54,9 +54,12 @@ async function fetchWithMock<T>(
       token,
       rawPath: true,
     })
-  } catch {
-    if (fallbackMockInDev) {
+  } catch (err) {
+    if (fallbackMockInDev && module !== 'salesTrend') {
       return mock
+    }
+    if (err instanceof Error) {
+      throw err
     }
     throw new Error(`Failed to load dashboard.${module}`)
   }

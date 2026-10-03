@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../app/hooks'
 import { logout } from '../features/auth/authSlice'
-import { isAdminUser, roleLabel } from '../features/auth/auth.utils'
+import { isAdminUser, isSellerUser, roleLabel } from '../features/auth/auth.utils'
 import './AppShell.css'
 
 interface AppShellProps {
@@ -23,6 +23,7 @@ export function AppShell({ children, toolbar }: AppShellProps) {
     .toUpperCase()
 
   const admin = isAdminUser(user)
+  const seller = isSellerUser(user)
 
   return (
     <div className="app-shell">
@@ -36,6 +37,11 @@ export function AppShell({ children, toolbar }: AppShellProps) {
             <NavLink to="/dashboard" className="app-shell__nav-link" end>
               Dashboard
             </NavLink>
+            {seller && (
+              <NavLink to="/account/password" className="app-shell__nav-link">
+                Password
+              </NavLink>
+            )}
             {admin && (
               <>
                 <NavLink to="/admin/employees" className="app-shell__nav-link">

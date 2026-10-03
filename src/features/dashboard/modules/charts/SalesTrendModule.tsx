@@ -53,7 +53,7 @@ export function SalesTrendModule({ module }: SalesTrendModuleProps) {
             className="line-chart__label"
             textAnchor="middle"
           >
-            {p.date.replace('May ', 'M')}
+            {p.date}
           </text>
         ))}
       </svg>

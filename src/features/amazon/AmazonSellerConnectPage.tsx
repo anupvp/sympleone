@@ -160,8 +160,8 @@ export function AmazonSellerConnectPage() {
                   Your Symple One login
                 </h2>
                 <p className="amazon-connect-card__credentials-hint">
-                  Save these credentials — the password is shown only once. You will
-                  use them to sign in after leaving this page.
+                  Save these credentials — the password is shown only once. You can
+                  change your password anytime from the dashboard under Password.
                 </p>
                 <dl className="amazon-connect-card__credentials-list">
                   <div>

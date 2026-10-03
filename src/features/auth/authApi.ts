@@ -97,6 +97,22 @@ export async function fetchCurrentUser(token: string): Promise<AuthUser> {
   return mapUser(me)
 }
 
+export async function changePasswordRequest(
+  token: string,
+  body: { current_password: string; new_password: string },
+): Promise<void> {
+  if (isRelaxedAuth()) {
+    return
+  }
+
+  await apiRequest<{ message: string }>({
+    method: 'POST',
+    endpoint: 'auth.changePassword',
+    token,
+    body,
+  })
+}
+
 export async function logoutRequest(token: string): Promise<void> {
   if (isRelaxedAuth()) {
     return

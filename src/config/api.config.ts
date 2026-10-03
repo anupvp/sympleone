@@ -31,6 +31,7 @@ export const API_CONFIG = {
       logout: '/auth/logout',
       me: '/auth/me',
       refresh: '/auth/refresh',
+      changePassword: '/auth/change-password',
     },
     dashboard: {
       stats: '/dashboard/stats',
