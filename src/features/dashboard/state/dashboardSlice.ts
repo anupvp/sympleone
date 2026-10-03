@@ -17,6 +17,7 @@ import type {
   SalesTrendData,
   StatCardData,
 } from '../types/dashboard.types'
+import { normalizeSalesTrend } from '../utils/normalizeSalesTrend'
 import {
   currentMonthYear,
   resolveSalesDateRange,
@@ -68,11 +69,7 @@ export const loadDashboard = createAsyncThunk(
     }
     const filters = state.dashboard.filters
 
-    const emptySalesTrend: SalesTrendData = {
-      frequency: 'Daily',
-      currencySymbol: '₹',
-      points: [],
-    }
+    const emptySalesTrend = normalizeSalesTrend(null)
 
     const [statsR, salesR, profitabilityR, alertsR, marketplacesR] =
       await Promise.allSettled([
@@ -93,7 +90,9 @@ export const loadDashboard = createAsyncThunk(
     return {
       stats: statsR.status === 'fulfilled' ? statsR.value : [],
       salesTrend:
-        salesR.status === 'fulfilled' ? salesR.value : emptySalesTrend,
+        salesR.status === 'fulfilled'
+          ? normalizeSalesTrend(salesR.value)
+          : emptySalesTrend,
       salesTrendError,
       profitability:
         profitabilityR.status === 'fulfilled'

@@ -48,9 +48,9 @@ export function MarketplaceTableModule({ module }: MarketplaceTableModuleProps) 
                   </td>
                   <td>{row.gmv}</td>
                   <td>{row.netSales}</td>
-                  <td>{row.orders.toLocaleString()}</td>
+                  <td>{(row.orders ?? 0).toLocaleString()}</td>
                   <td>{row.profit}</td>
-                  <td>{row.profitPercent.toLocaleString()}</td>
+                  <td>{(row.profitPercent ?? 0).toLocaleString()}</td>
                   <td className={up ? 'text-up' : 'text-down'}>
                     {up ? '↑' : '↓'} {Math.abs(row.growthPercent).toFixed(1)}%
                   </td>

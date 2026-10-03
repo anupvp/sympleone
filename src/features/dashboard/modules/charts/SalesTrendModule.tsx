@@ -31,16 +31,17 @@ export function SalesTrendModule({ module }: SalesTrendModuleProps) {
   const innerH = height - pad.top - pad.bottom
 
   let chart = null
-  if (data?.points.length) {
-    const points = data.points
+  const chartPoints = data?.points
+  if (chartPoints && chartPoints.length > 0) {
+    const points = chartPoints
     const symbol = data.currencySymbol
     const salesMax = Math.max(
-      ...points.flatMap((p) => [p.netSales, p.previousPeriod]),
       0,
+      ...points.flatMap((p) => [Number(p.netSales) || 0, Number(p.previousPeriod) || 0]),
     )
     const ordersMax = Math.max(
-      ...points.map((p) => p.orderCount),
       0,
+      ...points.map((p) => Number(p.orderCount) || 0),
     )
     const maxYSales = chartYMax(salesMax)
     const maxYOrders = chartOrderYMax(ordersMax)
@@ -66,7 +67,7 @@ export function SalesTrendModule({ module }: SalesTrendModuleProps) {
     const orderPath = points
       .map((p, i) => {
         const x = pad.left + i * step
-        const y = orderY(p.orderCount)
+        const y = orderY(Number(p.orderCount) || 0)
         return `${i === 0 ? 'M' : 'L'}${x},${y}`
       })
       .join(' ')

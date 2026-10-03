@@ -13,10 +13,21 @@ import './dashboard.css'
 export function DashboardPage() {
   const dispatch = useAppDispatch()
   const dashboard = useAppSelector((s) => s.dashboard)
+  const filters = dashboard.filters
 
   useEffect(() => {
     void dispatch(loadDashboard())
-  }, [dispatch, dashboard.filters])
+  }, [
+    dispatch,
+    filters.accountId,
+    filters.marketplaceId,
+    filters.dateFrom,
+    filters.dateTo,
+    filters.salesPeriodMode,
+    filters.salesDailyDate,
+    filters.salesMonth,
+    filters.salesYear,
+  ])
 
   return (
     <AppShell toolbar={<DashboardToolbar />}>

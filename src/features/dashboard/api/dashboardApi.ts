@@ -15,6 +15,7 @@ import type {
   SalesTrendData,
   StatCardData,
 } from '../types/dashboard.types'
+import { normalizeSalesTrend } from '../utils/normalizeSalesTrend'
 
 const forceMock = import.meta.env.VITE_USE_DASHBOARD_MOCK === 'true'
 const fallbackMockInDev = import.meta.env.DEV
@@ -69,13 +70,14 @@ export function fetchStatCards(token: string, filters: DashboardFilters) {
   return fetchWithMock<StatCardData[]>('stats', token, filters, mockStatCards)
 }
 
-export function fetchSalesTrend(token: string, filters: DashboardFilters) {
-  return fetchWithMock<SalesTrendData>(
+export async function fetchSalesTrend(token: string, filters: DashboardFilters) {
+  const data = await fetchWithMock<SalesTrendData>(
     'salesTrend',
     token,
     filters,
     mockSalesTrend,
   )
+  return normalizeSalesTrend(data)
 }
 
 export function fetchProfitability(token: string, filters: DashboardFilters) {

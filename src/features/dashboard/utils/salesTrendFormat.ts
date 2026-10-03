@@ -1,9 +1,13 @@
 /** Format raw currency amounts for tooltips (not lakh chart units). */
 export function formatSalesAmount(
-  amount: number,
+  amount: number | null | undefined,
   currencySymbol: string,
 ): string {
-  const rounded = Math.round(amount * 100) / 100
+  const safe = Number(amount)
+  if (!Number.isFinite(safe)) {
+    return `${currencySymbol}0`
+  }
+  const rounded = Math.round(safe * 100) / 100
   const formatted = rounded.toLocaleString('en-IN', {
     minimumFractionDigits: 0,
     maximumFractionDigits: rounded % 1 === 0 ? 0 : 2,
@@ -11,13 +15,17 @@ export function formatSalesAmount(
   return `${currencySymbol}${formatted}`
 }
 
-export function formatOrderCount(count: number): string {
-  return count.toLocaleString('en-IN')
+export function formatOrderCount(count: number | null | undefined): string {
+  const safe = Number(count)
+  if (!Number.isFinite(safe)) {
+    return '0'
+  }
+  return safe.toLocaleString('en-IN')
 }
 
 /** Integer-friendly Y-axis max for order count line. */
 export function chartOrderYMax(dataMax: number): number {
-  if (dataMax <= 0) {
+  if (!Number.isFinite(dataMax) || dataMax <= 0) {
     return 1
   }
   if (dataMax <= 5) {
