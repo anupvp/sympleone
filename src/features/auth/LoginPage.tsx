@@ -12,6 +12,7 @@ import {
   loadAnySavedEmail,
   persistLoginEmail,
 } from './loginRememberStorage'
+import { LoginHeroSocial } from './components/LoginHeroSocial'
 import './LoginPage.css'
 
 type LoginPanelMode = 'connect' | 'employee' | 'admin'
@@ -124,14 +125,7 @@ export function LoginPage() {
             marketplace—from a single operations command center.
           </p>
 
-          <div className="login-hero__social">
-            <div className="login-hero__avatars" aria-hidden>
-              <span>NR</span>
-              <span>UN</span>
-              <span>BE</span>
-            </div>
-            <p>12 seller accounts ready to monitor</p>
-          </div>
+          <LoginHeroSocial />
         </div>
       </aside>
 

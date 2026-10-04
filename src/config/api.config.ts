@@ -52,6 +52,9 @@ export const API_CONFIG = {
       connect: '/amazon/connect',
       callbackComplete: '/amazon/callback/complete',
     },
+    public: {
+      sellerCount: '/public/seller-count',
+    },
   },
 } as const
 

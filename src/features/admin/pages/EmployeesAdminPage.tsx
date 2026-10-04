@@ -16,6 +16,7 @@ import {
 import { useAdminApi } from '../hooks/useAdminApi'
 import { useFormDraft } from '../hooks/useFormDraft'
 import type { AccountStatus, AdminUserRecord, AssignedSeller, EmployeeRecord, RoleRecord } from '../types'
+import { generateEmployeePassword } from '../utils/generatePassword'
 import '../admin.css'
 
 const EMPLOYEE_DRAFT_KEY = 'sympleone_draft_admin_employee'
@@ -61,6 +62,11 @@ export function EmployeesAdminPage() {
   const [editRoleIds, setEditRoleIds] = useState<string[]>([])
   const [assignSellerFor, setAssignSellerFor] = useState<string | null>(null)
   const [pickSellerId, setPickSellerId] = useState('')
+  const [createdCredentials, setCreatedCredentials] = useState<{
+    email: string
+    password: string
+    fullName: string
+  } | null>(null)
 
   const roleNameById = useMemo(() => {
     const map = new Map<string, string>()
@@ -109,9 +115,15 @@ export function EmployeesAdminPage() {
     void load()
   }, [load])
 
+  const onGeneratePassword = () => {
+    setCreatedCredentials(null)
+    setDraft((d) => ({ ...d, password: generateEmployeePassword() }))
+  }
+
   const onCreate = async (e: FormEvent) => {
     e.preventDefault()
     try {
+      const credentials = { email, password, fullName }
       await withToken((t) =>
         createEmployee(t, {
           email,
@@ -121,6 +133,7 @@ export function EmployeesAdminPage() {
           seller_ids: sellerIds,
         }),
       )
+      setCreatedCredentials(credentials)
       clearDraft()
       await load()
     } catch (err) {
@@ -187,6 +200,35 @@ export function EmployeesAdminPage() {
 
       {error && <p className="admin-error" role="alert">{error}</p>}
 
+      {createdCredentials && (
+        <section className="admin-card admin-card--highlight admin-credentials-banner" role="status">
+          <h3>Employee created</h3>
+          <p className="admin-page__subtitle">
+            Share these sign-in details with {createdCredentials.fullName}. They can change their
+            password after logging in.
+          </p>
+          <dl className="admin-credentials-list">
+            <div>
+              <dt>Email</dt>
+              <dd>{createdCredentials.email}</dd>
+            </div>
+            <div>
+              <dt>Password</dt>
+              <dd>
+                <code className="admin-credentials-password">{createdCredentials.password}</code>
+              </dd>
+            </div>
+          </dl>
+          <button
+            type="button"
+            className="admin-btn"
+            onClick={() => setCreatedCredentials(null)}
+          >
+            Dismiss
+          </button>
+        </section>
+      )}
+
       <section className="admin-card">
         <h3>Add employee</h3>
         <form onSubmit={onCreate}>
@@ -208,15 +250,30 @@ export function EmployeesAdminPage() {
                 required
               />
             </label>
-            <label className="admin-field">
-              Password
+            <label className="admin-field admin-field--password">
+              <span className="admin-field__label-row">
+                <span>Password</span>
+                <button
+                  type="button"
+                  className="admin-btn admin-btn--compact"
+                  onClick={onGeneratePassword}
+                >
+                  Generate password
+                </button>
+              </span>
               <input
-                type="password"
+                type="text"
                 value={password}
                 onChange={(e) => setDraft((d) => ({ ...d, password: e.target.value }))}
                 required
                 minLength={8}
+                autoComplete="off"
+                spellCheck={false}
+                placeholder="Generate or type a password"
               />
+              <span className="admin-field__hint">
+                Shown here so you can copy it for the employee.
+              </span>
             </label>
           </div>
           <div className="admin-field" style={{ marginTop: '1rem' }}>

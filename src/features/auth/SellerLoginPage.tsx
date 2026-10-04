@@ -13,6 +13,7 @@ import {
   loadAnySavedEmail,
   persistLoginEmail,
 } from './loginRememberStorage'
+import { LoginHeroSocial } from './components/LoginHeroSocial'
 import './LoginPage.css'
 
 type SellerPanelMode = 'signin' | 'connect'
@@ -129,6 +130,8 @@ export function SellerLoginPage() {
             Sign in to view sales trends, marketplace performance, and connect your
             Amazon seller account with Symple One.
           </p>
+
+          <LoginHeroSocial />
         </div>
       </aside>
 
