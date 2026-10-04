@@ -1,5 +1,5 @@
 import { type FormEvent, useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { AMAZON_DEFAULT_MARKETPLACE_ID } from '../../config/api.config'
 import { ApiError } from '../../api/httpClient'
@@ -26,7 +26,7 @@ export function LoginPage() {
   const [email, setEmail] = useState(() => loadAnySavedEmail())
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [panelMode, setPanelMode] = useState<LoginPanelMode>('connect')
+  const [panelMode, setPanelMode] = useState<LoginPanelMode>('employee')
   const [amazonLoading, setAmazonLoading] = useState(false)
   const [amazonError, setAmazonError] = useState<string | null>(null)
 
@@ -160,6 +160,12 @@ export function LoginPage() {
             >
               Admin Login
             </button>
+            <Link
+              to="/seller/login"
+              className="login-panel__nav-link login-panel__nav-link--external"
+            >
+              Seller Login
+            </Link>
           </nav>
 
           {panelMode === 'connect' ? (

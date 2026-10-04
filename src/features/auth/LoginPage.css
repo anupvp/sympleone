@@ -188,6 +188,25 @@
   text-underline-offset: 4px;
 }
 
+a.login-panel__nav-link {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+a.login-panel__nav-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.login-panel__workspace-links {
+  margin-top: 1rem;
+  text-align: center;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
 .login-connect__hint {
   margin: 0 0 1.5rem;
   padding: 0.75rem 1rem;

@@ -6,6 +6,7 @@ import { GroupsAdminPage } from './features/admin/pages/GroupsAdminPage'
 import { RolesAdminPage } from './features/admin/pages/RolesAdminPage'
 import { SellersAdminPage } from './features/admin/pages/SellersAdminPage'
 import { LoginPage } from './features/auth/LoginPage'
+import { SellerLoginPage } from './features/auth/SellerLoginPage'
 import { AmazonOAuthHandoff } from './features/amazon/AmazonOAuthHandoff'
 import { AmazonOAuthRouteFallback } from './features/amazon/AmazonOAuthRouteFallback'
 import { AmazonOAuthCallbackPage } from './features/amazon/AmazonOAuthCallbackPage'
@@ -28,6 +29,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<Navigate to="/" replace />} />
+        <Route path="/seller/login" element={<SellerLoginPage />} />
+        <Route path="/seller" element={<Navigate to="/seller/login" replace />} />
         <Route path="/amazon/connect" element={<AmazonSellerConnectPage />} />
         <Route path="/amazon/callback" element={<AmazonOAuthCallbackPage />} />
         <Route
