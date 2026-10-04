@@ -306,8 +306,40 @@
   color: #64748b;
 }
 
+.admin-credentials-banner__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.35rem;
+}
+
 .admin-credentials-banner h3 {
-  margin-top: 0;
+  margin: 0;
+}
+
+.admin-copy-credentials {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #0f172a;
+  cursor: pointer;
+}
+
+.admin-copy-credentials:hover {
+  border-color: #0a1c19;
+  color: #0a1c19;
+}
+
+.admin-copy-credentials__icon {
+  width: 1rem;
+  height: 1rem;
 }
 
 .admin-credentials-list {

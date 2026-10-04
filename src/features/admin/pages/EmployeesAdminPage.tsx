@@ -67,6 +67,7 @@ export function EmployeesAdminPage() {
     password: string
     fullName: string
   } | null>(null)
+  const [credentialsCopied, setCredentialsCopied] = useState(false)
 
   const roleNameById = useMemo(() => {
     const map = new Map<string, string>()
@@ -117,7 +118,22 @@ export function EmployeesAdminPage() {
 
   const onGeneratePassword = () => {
     setCreatedCredentials(null)
+    setCredentialsCopied(false)
     setDraft((d) => ({ ...d, password: generateEmployeePassword() }))
+  }
+
+  const copyCreatedCredentials = async () => {
+    if (!createdCredentials) {
+      return
+    }
+    const text = `Email: ${createdCredentials.email}\nPassword: ${createdCredentials.password}`
+    try {
+      await navigator.clipboard.writeText(text)
+      setCredentialsCopied(true)
+      window.setTimeout(() => setCredentialsCopied(false), 2500)
+    } catch {
+      setError('Could not copy to clipboard')
+    }
   }
 
   const onCreate = async (e: FormEvent) => {
@@ -202,7 +218,29 @@ export function EmployeesAdminPage() {
 
       {createdCredentials && (
         <section className="admin-card admin-card--highlight admin-credentials-banner" role="status">
-          <h3>Employee created</h3>
+          <div className="admin-credentials-banner__head">
+            <h3>Employee created</h3>
+            <button
+              type="button"
+              className="admin-copy-credentials"
+              onClick={() => void copyCreatedCredentials()}
+              aria-label="Copy email and password to clipboard"
+              title="Copy credentials"
+            >
+              <svg
+                className="admin-copy-credentials__icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                aria-hidden
+              >
+                <rect x="9" y="9" width="11" height="11" rx="2" />
+                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+              </svg>
+              {credentialsCopied ? 'Copied' : 'Copy'}
+            </button>
+          </div>
           <p className="admin-page__subtitle">
             Share these sign-in details with {createdCredentials.fullName}. They can change their
             password after logging in.
@@ -222,7 +260,10 @@ export function EmployeesAdminPage() {
           <button
             type="button"
             className="admin-btn"
-            onClick={() => setCreatedCredentials(null)}
+            onClick={() => {
+              setCreatedCredentials(null)
+              setCredentialsCopied(false)
+            }}
           >
             Dismiss
           </button>
