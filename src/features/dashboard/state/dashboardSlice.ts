@@ -77,7 +77,7 @@ export const loadDashboard = createAsyncThunk(
 
     const emptySalesTrend = normalizeSalesTrend(null)
 
-    const salesTrendError = !sellerReady
+    const sellerContextError = !sellerReady
       ? 'Select a seller account to view the dashboard'
       : null
 
@@ -102,13 +102,21 @@ export const loadDashboard = createAsyncThunk(
           : 'Failed to load sales trend'
         : null
 
+    const statsFetchError =
+      sellerReady && statsR.status === 'rejected'
+        ? statsR.reason instanceof Error
+          ? statsR.reason.message
+          : 'Failed to load dashboard stats'
+        : null
+
     return {
       stats: statsR.status === 'fulfilled' ? statsR.value : [],
+      statsError: sellerContextError ?? statsFetchError,
       salesTrend:
         salesR.status === 'fulfilled'
           ? normalizeSalesTrend(salesR.value)
           : emptySalesTrend,
-      salesTrendError: salesTrendError ?? salesTrendFetchError,
+      salesTrendError: sellerContextError ?? salesTrendFetchError,
       profitability:
         profitabilityR.status === 'fulfilled'
           ? profitabilityR.value
@@ -148,7 +156,12 @@ const dashboardSlice = createSlice({
       .addCase(loadDashboard.fulfilled, (state, action) => {
         const now = Date.now()
         const success = { status: 'success' as const, error: null, lastFetchedAt: now }
-        state.stats = { data: action.payload.stats, ...success }
+        state.stats = {
+          data: action.payload.stats,
+          status: 'success',
+          error: action.payload.statsError,
+          lastFetchedAt: now,
+        }
         state.salesTrend = {
           data: action.payload.salesTrend,
           status: 'success',

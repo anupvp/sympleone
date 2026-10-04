@@ -59,7 +59,7 @@ async function fetchWithMock<T>(
       rawPath: true,
     })
   } catch (err) {
-    if (fallbackMockInDev && module !== 'salesTrend') {
+    if (fallbackMockInDev && module !== 'salesTrend' && module !== 'stats') {
       return mock
     }
     if (err instanceof Error) {
@@ -69,8 +69,16 @@ async function fetchWithMock<T>(
   }
 }
 
-export function fetchStatCards(token: string, filters: DashboardFilters) {
-  return fetchWithMock<StatCardData[]>('stats', token, filters, mockStatCards)
+export async function fetchStatCards(token: string, filters: DashboardFilters) {
+  if (forceMock) {
+    return mockStatCards.filter((card) => card.id === 'gmv')
+  }
+  return apiRequest<StatCardData[]>({
+    method: 'GET',
+    endpoint: dashboardPath('stats', filters),
+    token,
+    rawPath: true,
+  })
 }
 
 export async function fetchSalesTrend(token: string, filters: DashboardFilters) {
