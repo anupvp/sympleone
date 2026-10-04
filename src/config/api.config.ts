@@ -43,6 +43,7 @@ export const API_CONFIG = {
     admin: {
       employees: '/admin/employees',
       sellers: '/admin/sellers',
+      sellersOverview: '/admin/sellers/overview',
       groups: '/admin/groups',
       roles: '/admin/roles',
       policies: '/admin/policies',

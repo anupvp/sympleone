@@ -8,6 +8,14 @@ export function isSellerUser(user: AuthUser | null | undefined): boolean {
   return user?.role === 'seller'
 }
 
+export function isEmployeeUser(user: AuthUser | null | undefined): boolean {
+  return user?.role === 'employee'
+}
+
+export function needsSellerDashboardContext(user: AuthUser | null | undefined): boolean {
+  return isAdminUser(user) || isEmployeeUser(user)
+}
+
 export function roleLabel(role: UserRole | undefined): string {
   switch (role) {
     case 'admin':

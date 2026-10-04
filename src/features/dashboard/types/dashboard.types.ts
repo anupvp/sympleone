@@ -4,6 +4,8 @@ export type SalesPeriodMode = 'daily' | 'monthly' | 'dateRange'
 export interface DashboardFilters {
   accountId: string
   marketplaceId: string
+  /** When set, admin/employee view this seller's dashboard data */
+  sellerId: string
   dateFrom: string
   dateTo: string
   salesPeriodMode: SalesPeriodMode

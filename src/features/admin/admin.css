@@ -266,3 +266,63 @@
   border-radius: 8px;
   font-size: 0.8125rem;
 }
+
+.admin-form--inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 0.75rem;
+}
+
+.admin-card--highlight {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.admin-inline-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.sellers-overview__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.sellers-overview__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 88px;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+}
+
+.sellers-overview__stat--active {
+  border-color: #0a1c19;
+  background: #0a1c19;
+  color: #fff;
+}
+
+.sellers-overview__stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.sellers-overview__stat-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  opacity: 0.85;
+}

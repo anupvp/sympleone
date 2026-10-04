@@ -27,6 +27,9 @@ function filtersToQuery(filters: DashboardFilters): string {
     dateFrom: filters.dateFrom,
     dateTo: filters.dateTo,
   })
+  if (filters.sellerId?.trim()) {
+    params.set('sellerId', filters.sellerId.trim())
+  }
   return `?${params.toString()}`
 }
 

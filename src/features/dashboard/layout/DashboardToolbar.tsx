@@ -1,13 +1,61 @@
+import { useCallback, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
+import { listSellers } from '../../admin/api/adminApi'
+import type { SellerRecord } from '../../admin/types'
+import { needsSellerDashboardContext } from '../../auth/auth.utils'
 import { setFilters } from '../state/dashboardSlice'
 import { formatSalesPeriodLabel } from '../utils/salesPeriodUtils'
 
 export function DashboardToolbar() {
   const dispatch = useAppDispatch()
   const filters = useAppSelector((s) => s.dashboard.filters)
+  const token = useAppSelector((s) => s.auth.accessToken)
+  const user = useAppSelector((s) => s.auth.user)
+  const needsSeller = needsSellerDashboardContext(user)
+  const [sellers, setSellers] = useState<SellerRecord[]>([])
+  const [sellerLoadError, setSellerLoadError] = useState<string | null>(null)
+
+  const loadSellers = useCallback(async () => {
+    if (!needsSeller || !token) {
+      setSellers([])
+      return
+    }
+    try {
+      setSellerLoadError(null)
+      const rows = await listSellers(token)
+      setSellers(rows)
+      if (!filters.sellerId && rows.length === 1) {
+        dispatch(setFilters({ sellerId: rows[0].id }))
+      }
+    } catch (e) {
+      setSellerLoadError(e instanceof Error ? e.message : 'Could not load sellers')
+    }
+  }, [needsSeller, token, filters.sellerId, dispatch])
+
+  useEffect(() => {
+    void loadSellers()
+  }, [loadSellers])
 
   return (
     <div className="dash-toolbar">
+      {needsSeller && (
+        <select
+          className="dash-select"
+          value={filters.sellerId}
+          onChange={(e) => dispatch(setFilters({ sellerId: e.target.value }))}
+          aria-label="Seller account"
+        >
+          <option value="">Select seller…</option>
+          {sellers.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.full_name} ({s.email})
+            </option>
+          ))}
+        </select>
+      )}
+      {sellerLoadError && (
+        <span className="dash-toolbar-hint" role="status">{sellerLoadError}</span>
+      )}
       <select
         className="dash-select"
         value={filters.accountId}

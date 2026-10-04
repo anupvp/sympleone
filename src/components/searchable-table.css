@@ -1,0 +1,24 @@
+.searchable-table__search {
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.searchable-table__input {
+  width: 100%;
+  max-width: 320px;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.875rem;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}

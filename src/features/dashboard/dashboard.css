@@ -4,6 +4,48 @@
   gap: 1rem;
 }
 
+.dash-admin-sellers {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+}
+
+.dash-admin-sellers__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.dash-admin-sellers__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.dash-admin-sellers__link {
+  border: none;
+  background: transparent;
+  color: #0a1c19;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.dash-admin-sellers__error {
+  margin: 0;
+  color: #b91c1c;
+  font-size: 0.875rem;
+}
+
+.dash-toolbar-hint {
+  font-size: 0.75rem;
+  color: #b91c1c;
+}
+
 .dash-toolbar {
   display: flex;
   align-items: center;

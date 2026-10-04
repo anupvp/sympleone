@@ -1,11 +1,13 @@
 import { apiRequest } from '../../../api/httpClient'
 import { API_CONFIG } from '../../../config/api.config'
 import type {
+  AdminSellersOverview,
   AdminUserRecord,
   EmployeeRecord,
   GroupRecord,
   PolicyRecord,
   RoleRecord,
+  SellerRecord,
 } from '../types'
 
 /** Path only — httpClient prepends API_CONFIG.baseUrl when rawPath is true. */
@@ -189,10 +191,46 @@ export async function deleteRole(token: string, id: string): Promise<void> {
   })
 }
 
-export async function listSellers(token: string): Promise<AdminUserRecord[]> {
+export async function listSellers(token: string): Promise<SellerRecord[]> {
   return apiRequest({
     method: 'GET',
     endpoint: sellersUrl(),
+    token,
+    rawPath: true,
+  })
+}
+
+export async function fetchSellersOverview(token: string): Promise<AdminSellersOverview> {
+  return apiRequest({
+    method: 'GET',
+    endpoint: API_CONFIG.endpoints.admin.sellersOverview,
+    token,
+    rawPath: true,
+  })
+}
+
+export async function updateSeller(
+  token: string,
+  id: string,
+  body: { is_paid?: boolean; email?: string; full_name?: string },
+): Promise<SellerRecord> {
+  return apiRequest({
+    method: 'PATCH',
+    endpoint: sellersUrl(id),
+    token,
+    body,
+    rawPath: true,
+  })
+}
+
+export async function assignSellerToEmployee(
+  token: string,
+  sellerId: string,
+  employeeId: string,
+): Promise<SellerRecord> {
+  return apiRequest({
+    method: 'POST',
+    endpoint: `${sellersUrl(sellerId)}/assign/${employeeId}`,
     token,
     rawPath: true,
   })

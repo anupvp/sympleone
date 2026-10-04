@@ -9,6 +9,23 @@ export interface AdminUserRecord {
   role_ids: string[]
 }
 
+export interface SellerRecord extends AdminUserRecord {
+  is_paid: boolean
+  is_assigned: boolean
+  assigned_employees: string[]
+}
+
+export interface AdminSellersOverview {
+  counts: {
+    total: number
+    assigned: number
+    unassigned: number
+    paid: number
+    unpaid: number
+  }
+  sellers: SellerRecord[]
+}
+
 export interface AssignedSeller {
   id: string
   full_name: string

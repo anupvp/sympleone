@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../../../app/store'
+import { needsSellerDashboardContext } from '../../auth/auth.utils'
 import {
   fetchAlerts,
   fetchMarketplaces,
@@ -28,6 +29,7 @@ const { salesMonth, salesYear } = currentMonthYear()
 const initialRange = resolveSalesDateRange({
   accountId: 'all',
   marketplaceId: 'A21TJRUUN4KGV',
+  sellerId: '',
   salesPeriodMode: 'monthly',
   salesDailyDate: todayIsoDate(),
   salesMonth,
@@ -39,6 +41,7 @@ const initialRange = resolveSalesDateRange({
 const defaultFilters: DashboardFilters = {
   accountId: 'all',
   marketplaceId: 'A21TJRUUN4KGV',
+  sellerId: '',
   salesPeriodMode: 'monthly',
   salesDailyDate: todayIsoDate(),
   salesMonth,
@@ -68,20 +71,32 @@ export const loadDashboard = createAsyncThunk(
       return rejectWithValue('Not authenticated')
     }
     const filters = state.dashboard.filters
+    const user = state.auth.user
+    const needsSeller = needsSellerDashboardContext(user)
+    const sellerReady = !needsSeller || Boolean(filters.sellerId?.trim())
 
     const emptySalesTrend = normalizeSalesTrend(null)
 
+    const salesTrendError = !sellerReady
+      ? 'Select a seller account to view the dashboard'
+      : null
+
     const [statsR, salesR, profitabilityR, alertsR, marketplacesR] =
       await Promise.allSettled([
-        fetchStatCards(token, filters),
-        fetchSalesTrend(token, filters),
-        fetchProfitability(token, filters),
-        fetchAlerts(token, filters),
-        fetchMarketplaces(token, filters),
+        sellerReady ? fetchStatCards(token, filters) : Promise.resolve([]),
+        sellerReady ? fetchSalesTrend(token, filters) : Promise.resolve(emptySalesTrend),
+        sellerReady ? fetchProfitability(token, filters) : Promise.resolve({
+          centerLabel: 'Net Profit',
+          centerValue: '—',
+          segments: [],
+          netProfit: { label: 'Net Profit', amount: '—', percent: 0 },
+        }),
+        sellerReady ? fetchAlerts(token, filters) : Promise.resolve([]),
+        sellerReady ? fetchMarketplaces(token, filters) : Promise.resolve([]),
       ])
 
-    const salesTrendError =
-      salesR.status === 'rejected'
+    const salesTrendFetchError =
+      sellerReady && salesR.status === 'rejected'
         ? salesR.reason instanceof Error
           ? salesR.reason.message
           : 'Failed to load sales trend'
@@ -93,7 +108,7 @@ export const loadDashboard = createAsyncThunk(
         salesR.status === 'fulfilled'
           ? normalizeSalesTrend(salesR.value)
           : emptySalesTrend,
-      salesTrendError,
+      salesTrendError: salesTrendError ?? salesTrendFetchError,
       profitability:
         profitabilityR.status === 'fulfilled'
           ? profitabilityR.value
