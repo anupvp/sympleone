@@ -30,14 +30,6 @@ export function DashboardHeader() {
       <div className="dash-header__filters">
         <select
           className="dash-select"
-          value={filters.accountId}
-          onChange={(e) => dispatch(setFilters({ accountId: e.target.value }))}
-          aria-label="Accounts"
-        >
-          <option value="all">All Accounts</option>
-        </select>
-        <select
-          className="dash-select"
           value={filters.marketplaceId}
           onChange={(e) => dispatch(setFilters({ marketplaceId: e.target.value }))}
           aria-label="Marketplaces"

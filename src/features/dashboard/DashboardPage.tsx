@@ -20,7 +20,6 @@ export function DashboardPage() {
     void dispatch(loadDashboard())
   }, [
     dispatch,
-    filters.accountId,
     filters.marketplaceId,
     filters.dateFrom,
     filters.dateTo,

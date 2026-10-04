@@ -1,11 +1,10 @@
-import { type FormEvent, useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { AppShell } from '../../../layout/AppShell'
 import type { SearchableColumn } from '../../../components/SearchableTable'
 import { SellersOverviewTabs } from '../components/SellersOverviewTabs'
 import {
   activateSeller,
   assignSellerToEmployee,
-  createSeller,
   deleteSeller,
   fetchSellersOverview,
   listEmployees,
@@ -13,11 +12,8 @@ import {
   updateSeller,
 } from '../api/adminApi'
 import { useAdminApi } from '../hooks/useAdminApi'
-import { useFormDraft } from '../hooks/useFormDraft'
 import type { AdminSellersOverview, EmployeeRecord, SellerRecord } from '../types'
 import '../admin.css'
-
-const SELLER_DRAFT_KEY = 'sympleone_draft_admin_seller'
 
 export function SellersAdminPage() {
   const { withToken } = useAdminApi()
@@ -26,12 +22,6 @@ export function SellersAdminPage() {
   const [error, setError] = useState<string | null>(null)
   const [assignFor, setAssignFor] = useState<string | null>(null)
   const [pickEmployeeId, setPickEmployeeId] = useState('')
-  const [draft, setDraft, clearDraft] = useFormDraft(SELLER_DRAFT_KEY, {
-    fullName: '',
-    email: '',
-    password: '',
-  })
-  const { fullName, email, password } = draft
 
   const load = useCallback(async () => {
     try {
@@ -147,17 +137,6 @@ export function SellersAdminPage() {
     ]
   }, [load, withToken])
 
-  const onCreate = async (e: FormEvent) => {
-    e.preventDefault()
-    try {
-      await withToken((t) => createSeller(t, { email, password, full_name: fullName }))
-      clearDraft()
-      await load()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Create failed')
-    }
-  }
-
   const onAssign = async () => {
     if (!assignFor || !pickEmployeeId) {
       return
@@ -223,40 +202,6 @@ export function SellersAdminPage() {
           </div>
         </section>
       )}
-
-      <section className="admin-card">
-        <h3>Add seller</h3>
-        <form className="admin-form" onSubmit={onCreate}>
-          <label className="admin-field">
-            Business / seller name
-            <input
-              value={fullName}
-              onChange={(e) => setDraft((d) => ({ ...d, fullName: e.target.value }))}
-              required
-            />
-          </label>
-          <label className="admin-field">
-            Email
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setDraft((d) => ({ ...d, email: e.target.value }))}
-              required
-            />
-          </label>
-          <label className="admin-field">
-            Password
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setDraft((d) => ({ ...d, password: e.target.value }))}
-              required
-              minLength={8}
-            />
-          </label>
-          <button type="submit" className="admin-btn admin-btn--primary">Create seller</button>
-        </form>
-      </section>
 
       {overview && (
         <section className="admin-card">
