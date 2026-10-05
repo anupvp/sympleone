@@ -1,5 +1,7 @@
 .header-alerts {
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .header-alerts__btn {

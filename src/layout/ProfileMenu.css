@@ -1,9 +1,7 @@
 .profile-menu {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.45rem;
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .profile-menu__trigger {
@@ -14,12 +12,14 @@
   background: transparent;
   cursor: pointer;
   padding: 0;
-  text-align: right;
+  min-height: 2.25rem;
+  text-align: left;
 }
 
 .profile-menu__avatar {
-  width: 2rem;
-  height: 2rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
   border-radius: 999px;
   background: #6366f1;
   color: #fff;
