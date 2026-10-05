@@ -66,6 +66,8 @@ export type AlertTone = 'red' | 'orange' | 'amber' | 'blue' | 'green' | 'purple'
 
 export interface AlertActionItem {
   id: string
+  category?: string
+  categoryLabel?: string
   count: number
   title: string
   tone: AlertTone

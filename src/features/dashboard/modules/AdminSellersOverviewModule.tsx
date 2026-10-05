@@ -1,18 +1,17 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { openSellerDashboard } from '../utils/dashboardNavigation'
 import type { SearchableColumn } from '../../../components/SearchableTable'
 import '../../../components/searchable-table.css'
 import { fetchSellersOverview } from '../../admin/api/adminApi'
 import { SellersOverviewTabs } from '../../admin/components/SellersOverviewTabs'
 import type { AdminSellersOverview, SellerRecord } from '../../admin/types'
-import { useAppDispatch, useAppSelector } from '../../../app/hooks'
+import { useAppSelector } from '../../../app/hooks'
 import { isAdminUser } from '../../auth/auth.utils'
-import { setFilters } from '../state/dashboardSlice'
 
 export function AdminSellersOverviewModule() {
   const user = useAppSelector((s) => s.auth.user)
   const token = useAppSelector((s) => s.auth.accessToken)
-  const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const [overview, setOverview] = useState<AdminSellersOverview | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -100,10 +99,7 @@ export function AdminSellersOverviewModule() {
         overview={overview}
         columns={columns}
         rowActionLabel="View dashboard"
-        onRowAction={(seller) => {
-          dispatch(setFilters({ sellerId: seller.id }))
-          document.querySelector('.dash-charts-row')?.scrollIntoView({ behavior: 'smooth' })
-        }}
+        onRowAction={(seller) => openSellerDashboard(seller.id)}
       />
     </section>
   )

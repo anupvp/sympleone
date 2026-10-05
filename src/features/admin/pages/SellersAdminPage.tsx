@@ -11,13 +11,22 @@ import {
   suspendSeller,
   updateSeller,
 } from '../api/adminApi'
+import {
+  approveSellerAccessRequest,
+  listSellerAccessRequests,
+  rejectSellerAccessRequest,
+  type SellerAccessRequest,
+} from '../../account/accountApi'
+import { useAppSelector } from '../../../app/hooks'
 import { useAdminApi } from '../hooks/useAdminApi'
 import type { AdminSellersOverview, EmployeeRecord, SellerRecord } from '../types'
 import '../admin.css'
 
 export function SellersAdminPage() {
   const { withToken } = useAdminApi()
+  const token = useAppSelector((s) => s.auth.accessToken)
   const [overview, setOverview] = useState<AdminSellersOverview | null>(null)
+  const [accessRequests, setAccessRequests] = useState<SellerAccessRequest[]>([])
   const [employees, setEmployees] = useState<EmployeeRecord[]>([])
   const [error, setError] = useState<string | null>(null)
   const [assignFor, setAssignFor] = useState<string | null>(null)
@@ -26,16 +35,34 @@ export function SellersAdminPage() {
   const load = useCallback(async () => {
     try {
       setError(null)
-      const [data, employeeRows] = await Promise.all([
+      const [data, employeeRows, requests] = await Promise.all([
         withToken(fetchSellersOverview),
         withToken(listEmployees),
+        token ? listSellerAccessRequests(token) : Promise.resolve([]),
       ])
       setOverview(data)
       setEmployees(employeeRows)
+      setAccessRequests(requests)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to load sellers')
     }
-  }, [withToken])
+  }, [withToken, token])
+
+  const resolveRequest = async (requestId: string, action: 'approve' | 'reject') => {
+    if (!token) {
+      return
+    }
+    try {
+      if (action === 'approve') {
+        await approveSellerAccessRequest(token, requestId)
+      } else {
+        await rejectSellerAccessRequest(token, requestId)
+      }
+      await load()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not update request')
+    }
+  }
 
   useEffect(() => {
     void load()
@@ -165,6 +192,52 @@ export function SellersAdminPage() {
       </div>
 
       {error && <p className="admin-error" role="alert">{error}</p>}
+
+      {accessRequests.length > 0 && (
+        <section className="admin-card admin-card--highlight">
+          <h3>Seller access requests</h3>
+          <p className="admin-page__subtitle">
+            Employees requesting dashboard access to a seller account.
+          </p>
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Seller</th>
+                <th>Requested by</th>
+                <th>Requested</th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {accessRequests.map((req) => (
+                <tr key={req.id}>
+                  <td>{req.seller_name}</td>
+                  <td>{req.employee_name}</td>
+                  <td>{new Date(req.created_at).toLocaleString()}</td>
+                  <td>
+                    <div className="admin-actions">
+                      <button
+                        type="button"
+                        className="admin-btn admin-btn--primary"
+                        onClick={() => void resolveRequest(req.id, 'approve')}
+                      >
+                        Approve
+                      </button>
+                      <button
+                        type="button"
+                        className="admin-btn"
+                        onClick={() => void resolveRequest(req.id, 'reject')}
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      )}
 
       {assignFor && (
         <section className="admin-card admin-card--highlight">

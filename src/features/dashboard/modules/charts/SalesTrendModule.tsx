@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { ModuleFrame } from '../../components/ModuleFrame'
-import { SalesTrendPeriodControl } from '../../components/SalesTrendPeriodControl'
 import type { DashboardModuleState, SalesTrendData } from '../../types/dashboard.types'
 import {
   chartYMax,
@@ -237,7 +236,6 @@ export function SalesTrendModule({ module }: SalesTrendModuleProps) {
       status={module.status}
       error={module.error}
       className="chart-card"
-      action={<SalesTrendPeriodControl />}
     >
       <div className="chart-legend">
         <span><i className="dot dot--primary" /> Net sales</span>

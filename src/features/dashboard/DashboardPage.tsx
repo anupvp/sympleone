@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { AppShell } from '../../layout/AppShell'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
+import { SalesTrendPeriodControl } from './components/SalesTrendPeriodControl'
 import { DashboardToolbar } from './layout/DashboardToolbar'
 import { AlertsModule } from './modules/alerts/AlertsModule'
 import { ProfitabilityModule } from './modules/charts/ProfitabilityModule'
@@ -8,13 +10,21 @@ import { SalesTrendModule } from './modules/charts/SalesTrendModule'
 import { StatCardsModule } from './modules/stat-cards/StatCardsModule'
 import { AdminSellersOverviewModule } from './modules/AdminSellersOverviewModule'
 import { MarketplaceTableModule } from './modules/tables/MarketplaceTableModule'
-import { loadDashboard } from './state/dashboardSlice'
+import { loadDashboard, setFilters } from './state/dashboardSlice'
 import './dashboard.css'
 
 export function DashboardPage() {
   const dispatch = useAppDispatch()
+  const [searchParams] = useSearchParams()
   const dashboard = useAppSelector((s) => s.dashboard)
   const filters = dashboard.filters
+
+  useEffect(() => {
+    const sellerId = searchParams.get('sellerId')
+    if (sellerId?.trim()) {
+      dispatch(setFilters({ sellerId: sellerId.trim() }))
+    }
+  }, [searchParams, dispatch])
 
   useEffect(() => {
     void dispatch(loadDashboard())
@@ -31,7 +41,10 @@ export function DashboardPage() {
   ])
 
   return (
-    <AppShell toolbar={<DashboardToolbar />}>
+    <AppShell
+      toolbar={<DashboardToolbar />}
+      headerDateRange={<SalesTrendPeriodControl />}
+    >
       <div className="dash-content">
         <AdminSellersOverviewModule />
         <StatCardsModule module={dashboard.stats} />

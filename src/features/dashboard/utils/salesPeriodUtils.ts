@@ -35,6 +35,11 @@ export function currentMonthYear(): { salesMonth: number; salesYear: number } {
   return { salesMonth: now.getMonth() + 1, salesYear: now.getFullYear() }
 }
 
+export function isCurrentCalendarMonth(year: number, month: number): boolean {
+  const now = new Date()
+  return year === now.getFullYear() && month === now.getMonth() + 1
+}
+
 export function resolveSalesDateRange(
   filters: DashboardFilters,
 ): Pick<DashboardFilters, 'dateFrom' | 'dateTo'> {
@@ -46,9 +51,13 @@ export function resolveSalesDateRange(
     case 'monthly': {
       const year = filters.salesYear
       const month = filters.salesMonth
+      const dateFrom = `${year}-${pad2(month)}-01`
+      if (isCurrentCalendarMonth(year, month)) {
+        return { dateFrom, dateTo: todayIsoDate() }
+      }
       const lastDay = new Date(year, month, 0).getDate()
       return {
-        dateFrom: `${year}-${pad2(month)}-01`,
+        dateFrom,
         dateTo: `${year}-${pad2(month)}-${pad2(lastDay)}`,
       }
     }
@@ -78,8 +87,13 @@ export function formatSalesPeriodLabel(filters: DashboardFilters): string {
   switch (filters.salesPeriodMode) {
     case 'daily':
       return formatShortDate(filters.salesDailyDate || todayIsoDate())
-    case 'monthly':
+    case 'monthly': {
+      const { dateFrom, dateTo } = resolveSalesDateRange(filters)
+      if (isCurrentCalendarMonth(filters.salesYear, filters.salesMonth)) {
+        return `${formatShortDate(dateFrom)} – ${formatShortDate(dateTo)}`
+      }
       return `${MONTH_LABELS[filters.salesMonth - 1] ?? 'Month'} ${filters.salesYear}`
+    }
     case 'dateRange': {
       const { dateFrom, dateTo } = resolveSalesDateRange(filters)
       return `${formatShortDate(dateFrom)} – ${formatShortDate(dateTo)}`

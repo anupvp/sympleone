@@ -68,7 +68,7 @@ export function SalesTrendPeriodControl() {
   const years = yearOptions(filters.salesYear)
 
   return (
-    <div className="sales-period" ref={rootRef}>
+    <div className="sales-period" ref={rootRef} aria-label="Date range">
       <select
         className="dash-select dash-select--sm sales-period__mode"
         value={salesPeriodMode}

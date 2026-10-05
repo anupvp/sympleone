@@ -44,9 +44,15 @@ export const API_CONFIG = {
       employees: '/admin/employees',
       sellers: '/admin/sellers',
       sellersOverview: '/admin/sellers/overview',
+      sellerAccessRequests: '/admin/seller-access-requests',
       groups: '/admin/groups',
       roles: '/admin/roles',
       policies: '/admin/policies',
+    },
+    employee: {
+      me: '/employee/me',
+      sellers: '/employee/sellers',
+      assignedSellers: '/employee/assigned-sellers',
     },
     amazon: {
       connect: '/amazon/connect',

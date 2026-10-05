@@ -1,9 +1,11 @@
 .sales-period {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 0.35rem;
   flex-wrap: wrap;
   position: relative;
+  max-width: min(100vw - 2rem, 22rem);
 }
 
 .sales-period__mode {

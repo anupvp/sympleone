@@ -1,26 +1,22 @@
 import { NavLink } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../app/hooks'
 import { logout } from '../features/auth/authSlice'
-import { isAdminUser, isSellerUser, roleLabel } from '../features/auth/auth.utils'
+import { isAdminUser, isSellerUser } from '../features/auth/auth.utils'
+import { HeaderAlertsBell } from './HeaderAlertsBell'
+import { ProfileMenu } from './ProfileMenu'
 import './AppShell.css'
 
 interface AppShellProps {
   children: React.ReactNode
   /** Dashboard-specific toolbar (filters, etc.) */
   toolbar?: React.ReactNode
+  /** Date range controls shown under Sign out (dashboard). */
+  headerDateRange?: React.ReactNode
 }
 
-export function AppShell({ children, toolbar }: AppShellProps) {
+export function AppShell({ children, toolbar, headerDateRange }: AppShellProps) {
   const dispatch = useAppDispatch()
   const user = useAppSelector((s) => s.auth.user)
-
-  const displayName = user?.name ?? user?.email ?? 'User'
-  const initials = displayName
-    .split(' ')
-    .map((p) => p[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase()
 
   const admin = isAdminUser(user)
   const seller = isSellerUser(user)
@@ -64,20 +60,20 @@ export function AppShell({ children, toolbar }: AppShellProps) {
         {toolbar && <div className="app-shell__toolbar">{toolbar}</div>}
 
         <div className="app-shell__right">
-          <div className="app-shell__user">
-            <span className="app-shell__avatar">{initials}</span>
-            <div>
-              <p className="app-shell__user-name">{displayName}</p>
-              <p className="app-shell__user-role">{roleLabel(user?.role)}</p>
-            </div>
+          <HeaderAlertsBell />
+          <div className="app-shell__account-actions">
+            <ProfileMenu />
+            <button
+              type="button"
+              className="app-shell__signout"
+              onClick={() => void dispatch(logout())}
+            >
+              Sign out
+            </button>
+            {headerDateRange ? (
+              <div className="app-shell__date-range">{headerDateRange}</div>
+            ) : null}
           </div>
-          <button
-            type="button"
-            className="app-shell__signout"
-            onClick={() => void dispatch(logout())}
-          >
-            Sign out
-          </button>
         </div>
       </header>
       <main className="app-shell__main">{children}</main>

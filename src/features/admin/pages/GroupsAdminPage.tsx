@@ -134,7 +134,7 @@ export function GroupsAdminPage() {
                         }))
                       }
                     />
-                    {sel.full_name} ({sel.email})
+                    {sel.full_name}
                   </label>
                 ))}
               </div>
