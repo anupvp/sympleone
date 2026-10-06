@@ -51,6 +51,12 @@
   align-items: center;
   gap: 0.5rem;
   flex-wrap: wrap;
+  justify-content: center;
+}
+
+.dash-toolbar .sales-period {
+  justify-content: flex-start;
+  max-width: none;
 }
 
 .dash-header {

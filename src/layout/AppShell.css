@@ -79,21 +79,13 @@
 
 .app-shell__right {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.5rem;
+  align-items: center;
 }
 
 .app-shell__header-tools {
   display: flex;
   align-items: center;
   gap: 0.65rem;
-}
-
-.app-shell__date-range {
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
 }
 
 .app-shell__user {

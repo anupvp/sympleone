@@ -7,6 +7,7 @@ import {
   type EmployeeSellerRow,
 } from '../../account/accountApi'
 import { isAdminUser, isEmployeeUser, needsSellerDashboardContext } from '../../auth/auth.utils'
+import { SalesTrendPeriodControl } from '../components/SalesTrendPeriodControl'
 import { setFilters } from '../state/dashboardSlice'
 
 export function DashboardToolbar() {
@@ -89,6 +90,7 @@ export function DashboardToolbar() {
       >
         <option value="all">All Marketplaces</option>
       </select>
+      <SalesTrendPeriodControl />
     </div>
   )
 }

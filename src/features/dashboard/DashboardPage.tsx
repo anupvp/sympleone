@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { AppShell } from '../../layout/AppShell'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { SalesTrendPeriodControl } from './components/SalesTrendPeriodControl'
 import { DashboardToolbar } from './layout/DashboardToolbar'
 import { AlertsModule } from './modules/alerts/AlertsModule'
 import { ProfitabilityModule } from './modules/charts/ProfitabilityModule'
@@ -41,10 +40,7 @@ export function DashboardPage() {
   ])
 
   return (
-    <AppShell
-      toolbar={<DashboardToolbar />}
-      headerDateRange={<SalesTrendPeriodControl />}
-    >
+    <AppShell toolbar={<DashboardToolbar />}>
       <div className="dash-content">
         <AdminSellersOverviewModule />
         <StatCardsModule module={dashboard.stats} />

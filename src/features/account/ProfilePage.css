@@ -69,11 +69,28 @@
   text-decoration: none;
   color: inherit;
   background: #f8fafc;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.profile-link-grid button.profile-link-card {
+  width: 100%;
 }
 
 .profile-link-card:hover {
   border-color: #c7d2fe;
   background: #eef2ff;
+}
+
+.profile-link-card--active {
+  border-color: #818cf8;
+  background: #eef2ff;
+  box-shadow: 0 0 0 1px #c7d2fe;
+}
+
+.profile-link-card--muted.profile-link-card--active {
+  opacity: 1;
 }
 
 .profile-link-card--muted {

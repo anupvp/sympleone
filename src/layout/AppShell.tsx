@@ -10,11 +10,9 @@ interface AppShellProps {
   children: React.ReactNode
   /** Dashboard-specific toolbar (filters, etc.) */
   toolbar?: React.ReactNode
-  /** Date range controls shown under Sign out (dashboard). */
-  headerDateRange?: React.ReactNode
 }
 
-export function AppShell({ children, toolbar, headerDateRange }: AppShellProps) {
+export function AppShell({ children, toolbar }: AppShellProps) {
   const dispatch = useAppDispatch()
   const user = useAppSelector((s) => s.auth.user)
 
@@ -51,9 +49,6 @@ export function AppShell({ children, toolbar, headerDateRange }: AppShellProps) 
               Sign out
             </button>
           </div>
-          {headerDateRange ? (
-            <div className="app-shell__date-range">{headerDateRange}</div>
-          ) : null}
         </div>
       </header>
       <main className="app-shell__main">{children}</main>

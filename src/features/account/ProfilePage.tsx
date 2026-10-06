@@ -12,7 +12,68 @@ import {
   type EmployeeProfile,
   type EmployeeSellerRow,
 } from './accountApi'
+import {
+  type AdminWorkspaceCardId,
+  readLastAdminWorkspaceCard,
+  writeLastAdminWorkspaceCard,
+} from './profileAdminWorkspaceStorage'
 import './ProfilePage.css'
+
+const ADMIN_WORKSPACE_CARDS: {
+  id: AdminWorkspaceCardId
+  to?: string
+  label: string
+  hint: string
+  comingSoon?: boolean
+}[] = [
+  {
+    id: 'sellers',
+    to: '/admin/sellers',
+    label: 'Sellers',
+    hint: 'Add, authorize, on hold, delete, assign',
+  },
+  {
+    id: 'employees',
+    to: '/admin/employees',
+    label: 'Employees',
+    hint: 'Add, manage roles, assign sellers',
+  },
+  {
+    id: 'groups',
+    to: '/admin/groups',
+    label: 'Groups',
+    hint: 'Organize users and sellers',
+  },
+  {
+    id: 'roles',
+    to: '/admin/roles',
+    label: 'Roles & policies',
+    hint: 'Permissions and access rules',
+  },
+  {
+    id: 'attendance',
+    label: 'Attendance',
+    hint: 'Coming soon',
+    comingSoon: true,
+  },
+  {
+    id: 'performance',
+    label: 'Performance',
+    hint: 'Coming soon',
+    comingSoon: true,
+  },
+]
+
+function workspaceCardClass(id: AdminWorkspaceCardId, activeId: AdminWorkspaceCardId | null, muted?: boolean) {
+  const parts = ['profile-link-card']
+  if (muted) {
+    parts.push('profile-link-card--muted')
+  }
+  if (activeId === id) {
+    parts.push('profile-link-card--active')
+  }
+  return parts.join(' ')
+}
 
 function formatDate(iso: string) {
   try {
@@ -37,6 +98,18 @@ export function ProfilePage() {
   const [catalog, setCatalog] = useState<EmployeeSellerRow[]>([])
   const [error, setError] = useState<string | null>(null)
   const [requestingId, setRequestingId] = useState<string | null>(null)
+  const [activeWorkspaceCard, setActiveWorkspaceCard] = useState<AdminWorkspaceCardId | null>(null)
+
+  useEffect(() => {
+    if (admin) {
+      setActiveWorkspaceCard(readLastAdminWorkspaceCard(user?.id))
+    }
+  }, [admin, user?.id])
+
+  const rememberWorkspaceCard = (cardId: AdminWorkspaceCardId) => {
+    writeLastAdminWorkspaceCard(user?.id, cardId)
+    setActiveWorkspaceCard(cardId)
+  }
 
   const loadEmployee = useCallback(async () => {
     if (!token || !employee) {
@@ -97,30 +170,29 @@ export function ProfilePage() {
               Manage sellers and staff, authorize accounts, and review access requests.
             </p>
             <div className="profile-link-grid">
-              <Link to="/admin/sellers" className="profile-link-card">
-                <span className="profile-link-card__label">Sellers</span>
-                <span className="profile-link-card__hint">Add, authorize, on hold, delete, assign</span>
-              </Link>
-              <Link to="/admin/employees" className="profile-link-card">
-                <span className="profile-link-card__label">Employees</span>
-                <span className="profile-link-card__hint">Add, manage roles, assign sellers</span>
-              </Link>
-              <Link to="/admin/groups" className="profile-link-card">
-                <span className="profile-link-card__label">Groups</span>
-                <span className="profile-link-card__hint">Organize users and sellers</span>
-              </Link>
-              <Link to="/admin/roles" className="profile-link-card">
-                <span className="profile-link-card__label">Roles & policies</span>
-                <span className="profile-link-card__hint">Permissions and access rules</span>
-              </Link>
-              <div className="profile-link-card profile-link-card--muted" aria-disabled="true">
-                <span className="profile-link-card__label">Attendance</span>
-                <span className="profile-link-card__hint">Coming soon</span>
-              </div>
-              <div className="profile-link-card profile-link-card--muted" aria-disabled="true">
-                <span className="profile-link-card__label">Performance</span>
-                <span className="profile-link-card__hint">Coming soon</span>
-              </div>
+              {ADMIN_WORKSPACE_CARDS.map((card) =>
+                card.comingSoon ? (
+                  <button
+                    key={card.id}
+                    type="button"
+                    className={workspaceCardClass(card.id, activeWorkspaceCard, true)}
+                    onClick={() => rememberWorkspaceCard(card.id)}
+                  >
+                    <span className="profile-link-card__label">{card.label}</span>
+                    <span className="profile-link-card__hint">{card.hint}</span>
+                  </button>
+                ) : (
+                  <Link
+                    key={card.id}
+                    to={card.to!}
+                    className={workspaceCardClass(card.id, activeWorkspaceCard)}
+                    onClick={() => rememberWorkspaceCard(card.id)}
+                  >
+                    <span className="profile-link-card__label">{card.label}</span>
+                    <span className="profile-link-card__hint">{card.hint}</span>
+                  </Link>
+                ),
+              )}
             </div>
           </section>
         )}
