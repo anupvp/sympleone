@@ -62,6 +62,19 @@ export interface ProfitabilityData {
   netProfit: { label: string; amount: string; percent: number }
 }
 
+export type AccountHealthStatus = 'good' | 'warning' | 'critical'
+
+export interface AccountHealthMetric {
+  id: string
+  label: string
+  score: number
+  status: AccountHealthStatus
+}
+
+export interface AccountHealthData {
+  metrics: AccountHealthMetric[]
+}
+
 export type AlertTone = 'red' | 'orange' | 'amber' | 'blue' | 'green' | 'purple'
 
 export interface AlertActionItem {
@@ -99,6 +112,7 @@ export interface DashboardState {
   stats: DashboardModuleState<StatCardData[]>
   salesTrend: DashboardModuleState<SalesTrendData>
   profitability: DashboardModuleState<ProfitabilityData>
+  accountHealth: DashboardModuleState<AccountHealthData>
   alerts: DashboardModuleState<AlertActionItem[]>
   marketplaces: DashboardModuleState<MarketplaceRow[]>
 }

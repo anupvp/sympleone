@@ -1,0 +1,80 @@
+.account-health-card .dash-module__title {
+  font-size: 1rem;
+}
+
+.account-health-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.account-health-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(4.5rem, 5.5rem) 2.25rem;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.35rem;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+
+.account-health-row:hover {
+  background: #f8fafc;
+}
+
+.account-health-row__label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #334155;
+  line-height: 1.25;
+}
+
+.account-health-meter {
+  display: block;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.account-health-meter__fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  min-width: 2px;
+  transition: width 0.25s ease;
+}
+
+.account-health-meter__fill--good {
+  background: #22c55e;
+}
+
+.account-health-meter__fill--warning {
+  background: #f59e0b;
+}
+
+.account-health-meter__fill--critical {
+  background: #ef4444;
+}
+
+.account-health-row__score {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #64748b;
+  text-align: right;
+}
+
+.account-health-empty {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: #64748b;
+}

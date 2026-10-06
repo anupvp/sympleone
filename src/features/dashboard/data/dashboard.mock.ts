@@ -1,10 +1,22 @@
 import type {
+  AccountHealthData,
   AlertActionItem,
   MarketplaceRow,
   ProfitabilityData,
   SalesTrendData,
   StatCardData,
 } from '../types/dashboard.types'
+
+export const mockAccountHealth: AccountHealthData = {
+  metrics: [
+    { id: 'policyViolation', label: 'Policy Violation', score: 18, status: 'good' },
+    { id: 'orderCancellationRate', label: 'Order Cancellation Rate', score: 6.5, status: 'good' },
+    { id: 'paymentHold', label: 'Payment Hold', score: 42, status: 'warning' },
+    { id: 'lowInventory', label: 'Low Inventory', score: 58, status: 'warning' },
+    { id: 'adsBudgetExhausted', label: 'Ads Budget Exhausted', score: 24, status: 'good' },
+    { id: 'orderDefectRate', label: 'Order Defect Rate', score: 11, status: 'good' },
+  ],
+}
 
 export const mockStatCards: StatCardData[] = [
   {

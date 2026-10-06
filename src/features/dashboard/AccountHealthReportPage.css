@@ -1,0 +1,73 @@
+.account-health-report {
+  max-width: 42rem;
+  margin: 0 auto;
+}
+
+.account-health-report__back {
+  margin: 0 0 0.75rem;
+  font-size: 0.8125rem;
+}
+
+.account-health-report__back a {
+  color: #4338ca;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.account-health-report__back a:hover {
+  text-decoration: underline;
+}
+
+.account-health-report__head h1 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.account-health-report__meta {
+  margin: 0.35rem 0 1.25rem;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.account-health-report__error {
+  color: #b91c1c;
+  font-size: 0.875rem;
+}
+
+.account-health-report__card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1rem 1.15rem;
+  margin-bottom: 1rem;
+}
+
+.account-health-report__card h2 {
+  margin: 0 0 0.5rem;
+  font-size: 0.9375rem;
+}
+
+.account-health-report__card p {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #475569;
+}
+
+.account-health-report__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+.account-health-report__table th,
+.account-health-report__table td {
+  padding: 0.5rem 0.35rem;
+  text-align: left;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.account-health-report__table th {
+  color: #64748b;
+  font-weight: 600;
+}

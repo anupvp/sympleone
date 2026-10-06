@@ -37,6 +37,7 @@ export const API_CONFIG = {
       stats: '/dashboard/stats',
       salesTrend: '/dashboard/sales-trend',
       profitability: '/dashboard/profitability',
+      accountHealth: '/dashboard/account-health',
       alerts: '/dashboard/alerts',
       marketplaces: '/dashboard/marketplaces',
     },

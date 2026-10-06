@@ -13,6 +13,7 @@ import { AmazonOAuthCallbackPage } from './features/amazon/AmazonOAuthCallbackPa
 import { AmazonSellerConnectPage } from './features/amazon/AmazonSellerConnectPage'
 import { ChangePasswordPage } from './features/account/ChangePasswordPage'
 import { ProfilePage } from './features/account/ProfilePage'
+import { AccountHealthReportPage } from './features/dashboard/AccountHealthReportPage'
 import { DashboardPage } from './features/dashboard/DashboardPage'
 
 function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -39,6 +40,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/account-health/report"
+          element={
+            <ProtectedRoute>
+              <AccountHealthReportPage />
             </ProtectedRoute>
           }
         />

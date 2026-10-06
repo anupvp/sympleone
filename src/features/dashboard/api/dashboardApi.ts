@@ -3,11 +3,13 @@ import { API_CONFIG } from '../../../config/api.config'
 import {
   mockAlerts,
   mockMarketplaces,
+  mockAccountHealth,
   mockProfitability,
   mockSalesTrend,
   mockStatCards,
 } from '../data/dashboard.mock'
 import type {
+  AccountHealthData,
   AlertActionItem,
   DashboardFilters,
   MarketplaceRow,
@@ -97,6 +99,15 @@ export function fetchProfitability(token: string, filters: DashboardFilters) {
     token,
     filters,
     mockProfitability,
+  )
+}
+
+export function fetchAccountHealth(token: string, filters: DashboardFilters) {
+  return fetchWithMock<AccountHealthData>(
+    'accountHealth',
+    token,
+    filters,
+    mockAccountHealth,
   )
 }
 

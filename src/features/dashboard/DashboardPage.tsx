@@ -2,8 +2,8 @@ import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { AppShell } from '../../layout/AppShell'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { AccountHealthPanel } from './components/AccountHealthPanel'
 import { DashboardToolbar } from './layout/DashboardToolbar'
+import { AccountHealthModule } from './modules/charts/AccountHealthModule'
 import { AlertsModule } from './modules/alerts/AlertsModule'
 import { ProfitabilityModule } from './modules/charts/ProfitabilityModule'
 import { SalesTrendModule } from './modules/charts/SalesTrendModule'
@@ -42,13 +42,15 @@ export function DashboardPage() {
 
   return (
     <AppShell toolbar={<DashboardToolbar />}>
-      <AccountHealthPanel />
       <div className="dash-content">
         <AdminSellersOverviewModule />
         <StatCardsModule module={dashboard.stats} />
         <div className="dash-charts-row">
           <SalesTrendModule module={dashboard.salesTrend} />
-          <ProfitabilityModule module={dashboard.profitability} />
+          <div className="dash-charts-row__pair">
+            <ProfitabilityModule module={dashboard.profitability} />
+            <AccountHealthModule module={dashboard.accountHealth} />
+          </div>
         </div>
         <AlertsModule module={dashboard.alerts} />
         <MarketplaceTableModule module={dashboard.marketplaces} />

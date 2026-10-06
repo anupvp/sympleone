@@ -4,11 +4,13 @@ import { needsSellerDashboardContext } from '../../auth/auth.utils'
 import {
   fetchAlerts,
   fetchMarketplaces,
+  fetchAccountHealth,
   fetchProfitability,
   fetchSalesTrend,
   fetchStatCards,
 } from '../api/dashboardApi'
 import type {
+  AccountHealthData,
   AlertActionItem,
   DashboardFilters,
   DashboardModuleState,
@@ -58,6 +60,7 @@ const initialState: DashboardState = {
   stats: emptyModule<StatCardData[]>(),
   salesTrend: emptyModule<SalesTrendData>(),
   profitability: emptyModule<ProfitabilityData>(),
+  accountHealth: emptyModule<AccountHealthData>(),
   alerts: emptyModule<AlertActionItem[]>(),
   marketplaces: emptyModule<MarketplaceRow[]>(),
 }
@@ -81,7 +84,9 @@ export const loadDashboard = createAsyncThunk(
       ? 'Select a seller account to view the dashboard'
       : null
 
-    const [statsR, salesR, profitabilityR, alertsR, marketplacesR] =
+    const emptyAccountHealth: AccountHealthData = { metrics: [] }
+
+    const [statsR, salesR, profitabilityR, accountHealthR, alertsR, marketplacesR] =
       await Promise.allSettled([
         sellerReady ? fetchStatCards(token, filters) : Promise.resolve([]),
         sellerReady ? fetchSalesTrend(token, filters) : Promise.resolve(emptySalesTrend),
@@ -91,6 +96,7 @@ export const loadDashboard = createAsyncThunk(
           segments: [],
           netProfit: { label: 'Net Profit', amount: '—', percent: 0 },
         }),
+        sellerReady ? fetchAccountHealth(token, filters) : Promise.resolve(emptyAccountHealth),
         sellerReady ? fetchAlerts(token, filters) : Promise.resolve([]),
         sellerReady ? fetchMarketplaces(token, filters) : Promise.resolve([]),
       ])
@@ -126,6 +132,8 @@ export const loadDashboard = createAsyncThunk(
               segments: [],
               netProfit: { label: 'Net Profit', amount: '—', percent: 0 },
             },
+      accountHealth:
+        accountHealthR.status === 'fulfilled' ? accountHealthR.value : emptyAccountHealth,
       alerts: alertsR.status === 'fulfilled' ? alertsR.value : [],
       marketplaces:
         marketplacesR.status === 'fulfilled' ? marketplacesR.value : [],
@@ -150,6 +158,7 @@ const dashboardSlice = createSlice({
         state.stats = { ...state.stats, ...loading }
         state.salesTrend = { ...state.salesTrend, ...loading }
         state.profitability = { ...state.profitability, ...loading }
+        state.accountHealth = { ...state.accountHealth, ...loading }
         state.alerts = { ...state.alerts, ...loading }
         state.marketplaces = { ...state.marketplaces, ...loading }
       })
@@ -169,6 +178,7 @@ const dashboardSlice = createSlice({
           lastFetchedAt: now,
         }
         state.profitability = { data: action.payload.profitability, ...success }
+        state.accountHealth = { data: action.payload.accountHealth, ...success }
         state.alerts = { data: action.payload.alerts, ...success }
         state.marketplaces = { data: action.payload.marketplaces, ...success }
       })
@@ -181,6 +191,7 @@ const dashboardSlice = createSlice({
         state.stats = { ...state.stats, ...failed }
         state.salesTrend = { ...state.salesTrend, ...failed }
         state.profitability = { ...state.profitability, ...failed }
+        state.accountHealth = { ...state.accountHealth, ...failed }
         state.alerts = { ...state.alerts, ...failed }
         state.marketplaces = { ...state.marketplaces, ...failed }
       })
