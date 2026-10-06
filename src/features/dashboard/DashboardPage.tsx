@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { AppShell } from '../../layout/AppShell'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
+import { AccountHealthPanel } from './components/AccountHealthPanel'
 import { DashboardToolbar } from './layout/DashboardToolbar'
 import { AlertsModule } from './modules/alerts/AlertsModule'
 import { ProfitabilityModule } from './modules/charts/ProfitabilityModule'
@@ -41,6 +42,7 @@ export function DashboardPage() {
 
   return (
     <AppShell toolbar={<DashboardToolbar />}>
+      <AccountHealthPanel />
       <div className="dash-content">
         <AdminSellersOverviewModule />
         <StatCardsModule module={dashboard.stats} />
