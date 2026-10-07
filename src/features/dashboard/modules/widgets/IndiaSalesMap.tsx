@@ -2,28 +2,47 @@ import { useMemo, useState } from 'react'
 import indiaMap from '@svg-maps/india'
 import { formatSalesAmount } from '../../utils/salesTrendFormat'
 
-const FILL_EMPTY = '#e8ecf3'
-const FILL_MIN = '#ddd6fe'
-const FILL_MAX = '#6d28d9'
-
-function salesFill(amount: number, max: number): string {
-  if (amount <= 0 || max <= 0) {
-    return FILL_EMPTY
-  }
-  const t = Math.min(1, amount / max)
-  const mix = (a: number, b: number) => Math.round(a + (b - a) * t)
-  const parse = (hex: string) => [
-    parseInt(hex.slice(1, 3), 16),
-    parseInt(hex.slice(3, 5), 16),
-    parseInt(hex.slice(5, 7), 16),
-  ]
-  const [r0, g0, b0] = parse(FILL_MIN)
-  const [r1, g1, b1] = parse(FILL_MAX)
-  const r = mix(r0, r1)
-  const g = mix(g0, g1)
-  const b = mix(b0, b1)
-  return `rgb(${r}, ${g}, ${b})`
+/** Fixed fill per state id from @svg-maps/india. */
+const STATE_COLORS: Record<string, string> = {
+  an: '#5eead4',
+  ap: '#fb923c',
+  ar: '#a3e635',
+  as: '#38bdf8',
+  br: '#f472b6',
+  ch: '#facc15',
+  ct: '#c084fc',
+  dn: '#2dd4bf',
+  dd: '#67e8f9',
+  dl: '#f87171',
+  ga: '#4ade80',
+  gj: '#fbbf24',
+  hr: '#818cf8',
+  hp: '#34d399',
+  jk: '#60a5fa',
+  jh: '#fb7185',
+  ka: '#a78bfa',
+  kl: '#22c55e',
+  ld: '#22d3ee',
+  mp: '#f59e0b',
+  mh: '#8b5cf6',
+  mn: '#e879f9',
+  ml: '#84cc16',
+  mz: '#14b8a6',
+  nl: '#f97316',
+  or: '#3b82f6',
+  py: '#ec4899',
+  pb: '#eab308',
+  rj: '#ef4444',
+  sk: '#10b981',
+  tn: '#6366f1',
+  tg: '#d946ef',
+  tr: '#06b6d4',
+  up: '#f43f5e',
+  ut: '#0ea5e9',
+  wb: '#15803d',
 }
+
+const FALLBACK_COLOR = '#cbd5e1'
 
 interface IndiaSalesMapProps {
   salesByStateId: Record<string, number>
@@ -32,11 +51,6 @@ interface IndiaSalesMapProps {
 
 export function IndiaSalesMap({ salesByStateId, currencySymbol }: IndiaSalesMapProps) {
   const [activeId, setActiveId] = useState<string | null>(null)
-
-  const maxSales = useMemo(() => {
-    const values = Object.values(salesByStateId)
-    return values.length > 0 ? Math.max(...values, 0) : 0
-  }, [salesByStateId])
 
   const activeLocation = useMemo(
     () => indiaMap.locations.find((loc) => loc.id === activeId),
@@ -61,7 +75,7 @@ export function IndiaSalesMap({ salesByStateId, currencySymbol }: IndiaSalesMapP
               key={loc.id}
               d={loc.path}
               className={`india-map__state${isActive ? ' india-map__state--active' : ''}`}
-              fill={salesFill(amount, maxSales)}
+              fill={STATE_COLORS[loc.id] ?? FALLBACK_COLOR}
               onMouseEnter={() => setActiveId(loc.id)}
               onMouseLeave={() => setActiveId(null)}
               onFocus={() => setActiveId(loc.id)}
