@@ -20,6 +20,31 @@ body {
   min-height: 100vh;
 }
 
+/* Click feedback: brief light grey while pressed */
+button:active:not(:disabled),
+input[type='button']:active:not(:disabled),
+input[type='submit']:active:not(:disabled),
+.app-shell__signout:active,
+.dash-page-header__export:active,
+.product-tabs__btn:active,
+.alerts-tabs__btn:active,
+.header-alerts__btn:active,
+.profile-menu__trigger:active {
+  background-color: #e2e8f0 !important;
+}
+
+a.quick-action:active,
+.app-sidebar__link:active,
+.profile-link-card:active {
+  background-color: #e8ecf3 !important;
+}
+
+.account-health-v2__row:active,
+.account-health-row:active,
+.orders-table tbody tr:active {
+  background-color: #f1f5f9;
+}
+
 a {
   color: #38bdf8;
 }

@@ -33,6 +33,7 @@ export const API_CONFIG = {
       refresh: '/auth/refresh',
       changePassword: '/auth/change-password',
     },
+    orders: '/orders',
     dashboard: {
       stats: '/dashboard/stats',
       salesTrend: '/dashboard/sales-trend',

@@ -15,6 +15,7 @@ import { ChangePasswordPage } from './features/account/ChangePasswordPage'
 import { ProfilePage } from './features/account/ProfilePage'
 import { AccountHealthReportPage } from './features/dashboard/AccountHealthReportPage'
 import { PlaceholderSectionPage } from './features/app/PlaceholderSectionPage'
+import { OrdersPage } from './features/orders/OrdersPage'
 import { DashboardPage } from './features/dashboard/DashboardPage'
 
 function AppSection({ title }: { title: string }) {
@@ -109,7 +110,7 @@ export default function App() {
             </AdminLayout>
           }
         />
-        <Route path="/app/orders" element={<ProtectedRoute><AppSection title="Orders" /></ProtectedRoute>} />
+        <Route path="/app/orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
         <Route path="/app/products" element={<ProtectedRoute><AppSection title="Products" /></ProtectedRoute>} />
         <Route path="/app/inventory" element={<ProtectedRoute><AppSection title="Inventory" /></ProtectedRoute>} />
         <Route path="/app/marketplaces" element={<ProtectedRoute><AppSection title="Marketplaces" /></ProtectedRoute>} />
