@@ -1,6 +1,8 @@
 import { apiRequest } from '../../api/httpClient'
 import { API_CONFIG } from '../../config/api.config'
 import type { DashboardFilters } from '../dashboard/types/dashboard.types'
+import { resolveSalesDateRange } from '../dashboard/utils/salesPeriodUtils'
+import { ordersCreatedRange } from './ordersQueryParams'
 
 export interface OrderMoney {
   currency_code: string
@@ -25,14 +27,17 @@ export interface OrderRow {
 
 export interface OrdersListResponse {
   orders: OrderRow[]
+  created_after: string | null
   created_before: string | null
 }
 
-function ordersQuery(filters: Pick<DashboardFilters, 'marketplaceId' | 'dateFrom' | 'dateTo' | 'sellerId'>) {
+function ordersQuery(filters: DashboardFilters) {
+  const { dateFrom, dateTo } = resolveSalesDateRange(filters)
+  const { CreatedAfter, CreatedBefore } = ordersCreatedRange(dateFrom, dateTo)
   const params = new URLSearchParams({
     marketplaceId: filters.marketplaceId || 'all',
-    dateFrom: filters.dateFrom,
-    dateTo: filters.dateTo,
+    CreatedAfter,
+    CreatedBefore,
   })
   if (filters.sellerId?.trim()) {
     params.set('sellerId', filters.sellerId.trim())
@@ -40,7 +45,7 @@ function ordersQuery(filters: Pick<DashboardFilters, 'marketplaceId' | 'dateFrom
   return `?${params.toString()}`
 }
 
-export function fetchOrders(token: string, filters: Pick<DashboardFilters, 'marketplaceId' | 'dateFrom' | 'dateTo' | 'sellerId'>) {
+export function fetchOrders(token: string, filters: DashboardFilters) {
   return apiRequest<OrdersListResponse>({
     method: 'GET',
     endpoint: `${API_CONFIG.endpoints.orders}${ordersQuery(filters)}`,
