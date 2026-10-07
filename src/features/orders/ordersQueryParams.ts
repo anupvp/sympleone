@@ -1,3 +1,13 @@
+/** SP-API: CreatedBefore must be at least ~2 minutes before "now". */
+function clampCreatedBefore(iso: string): string {
+  const target = new Date(iso).getTime()
+  const latest = Date.now() - 3 * 60 * 1000
+  if (target > latest) {
+    return new Date(latest).toISOString().replace(/\.\d{3}Z$/, 'Z')
+  }
+  return iso
+}
+
 /** Build SP-API-style CreatedAfter / CreatedBefore from dashboard YYYY-MM-DD dates. */
 export function ordersCreatedRange(dateFrom: string, dateTo: string): {
   CreatedAfter: string
@@ -9,6 +19,6 @@ export function ordersCreatedRange(dateFrom: string, dateTo: string): {
   const yyyy = next.getUTCFullYear()
   const mm = String(next.getUTCMonth() + 1).padStart(2, '0')
   const dd = String(next.getUTCDate()).padStart(2, '0')
-  const CreatedBefore = `${yyyy}-${mm}-${dd}T00:00:00Z`
+  const CreatedBefore = clampCreatedBefore(`${yyyy}-${mm}-${dd}T00:00:00Z`)
   return { CreatedAfter, CreatedBefore }
 }

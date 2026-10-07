@@ -28,6 +28,27 @@ function formatTotal(row: OrderRow) {
   return `${sym}${row.order_total.amount}`
 }
 
+const ORDERS_SKELETON_ROWS = 8
+
+/** Relative bar widths per column for skeleton placeholders */
+const SKELETON_WIDTHS = ['72%', '85%', '55%', '48%', '62%', '70%', '40%', '58%', '50%']
+
+function OrdersTableSkeletonBody() {
+  return (
+    <>
+      {Array.from({ length: ORDERS_SKELETON_ROWS }, (_, rowIndex) => (
+        <tr key={`skeleton-${rowIndex}`} className="orders-table__row--skeleton" aria-hidden="true">
+          {SKELETON_WIDTHS.map((width, colIndex) => (
+            <td key={colIndex}>
+              <span className="orders-table__skeleton" style={{ width }} />
+            </td>
+          ))}
+        </tr>
+      ))}
+    </>
+  )
+}
+
 export function OrdersPage() {
   const token = useAppSelector((s) => s.auth.accessToken)
   const user = useAppSelector((s) => s.auth.user)
@@ -76,14 +97,13 @@ export function OrdersPage() {
         </header>
 
         {error && <p className="orders-page__error" role="alert">{error}</p>}
-        {loading && <p className="orders-page__loading" aria-busy="true">Loading orders…</p>}
 
         {!loading && !error && rows.length === 0 && (
           <p className="orders-page__empty">No orders found for this period.</p>
         )}
 
-        {rows.length > 0 && (
-          <div className="orders-table-wrap">
+        {(loading || rows.length > 0) && (
+          <div className="orders-table-wrap" aria-busy={loading}>
             <table className="orders-table">
               <thead>
                 <tr>
@@ -99,27 +119,32 @@ export function OrdersPage() {
                 </tr>
               </thead>
               <tbody>
-                {rows.map((row) => (
-                  <tr key={row.amazon_order_id}>
-                    <td className="orders-table__id">{row.amazon_order_id}</td>
-                    <td>{formatPurchaseDate(row.purchase_date)}</td>
-                    <td>
-                      <span className={`orders-badge orders-badge--${(row.order_status ?? '').toLowerCase()}`}>
-                        {row.order_status ?? '—'}
-                      </span>
-                    </td>
-                    <td>{formatTotal(row)}</td>
-                    <td>{row.payment_method ?? '—'}</td>
-                    <td>
-                      {[row.ship_city, row.ship_state].filter(Boolean).join(', ') || '—'}
-                    </td>
-                    <td>{row.is_prime ? 'Yes' : 'No'}</td>
-                    <td>{row.fulfillment_channel ?? '—'}</td>
-                    <td>{row.easy_ship_status ?? '—'}</td>
-                  </tr>
-                ))}
+                {loading ? (
+                  <OrdersTableSkeletonBody />
+                ) : (
+                  rows.map((row) => (
+                    <tr key={row.amazon_order_id}>
+                      <td className="orders-table__id">{row.amazon_order_id}</td>
+                      <td>{formatPurchaseDate(row.purchase_date)}</td>
+                      <td>
+                        <span className={`orders-badge orders-badge--${(row.order_status ?? '').toLowerCase()}`}>
+                          {row.order_status ?? '—'}
+                        </span>
+                      </td>
+                      <td>{formatTotal(row)}</td>
+                      <td>{row.payment_method ?? '—'}</td>
+                      <td>
+                        {[row.ship_city, row.ship_state].filter(Boolean).join(', ') || '—'}
+                      </td>
+                      <td>{row.is_prime ? 'Yes' : 'No'}</td>
+                      <td>{row.fulfillment_channel ?? '—'}</td>
+                      <td>{row.easy_ship_status ?? '—'}</td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
+            {loading && <span className="orders-page__sr-only">Loading orders…</span>}
           </div>
         )}
       </div>
