@@ -1,43 +1,25 @@
-import { Link, NavLink } from 'react-router-dom'
-import { useAppDispatch, useAppSelector } from '../app/hooks'
+import { useAppDispatch } from '../app/hooks'
 import { logout } from '../features/auth/authSlice'
-import { isSellerUser } from '../features/auth/auth.utils'
 import { HeaderAlertsBell } from './HeaderAlertsBell'
+import { AppSidebar } from './AppSidebar'
 import { ProfileMenu } from './ProfileMenu'
 import './AppShell.css'
 
 interface AppShellProps {
   children: React.ReactNode
-  /** Dashboard-specific toolbar (filters, etc.) */
+  /** Global filters shown in the top bar (dashboard). */
   toolbar?: React.ReactNode
 }
 
 export function AppShell({ children, toolbar }: AppShellProps) {
   const dispatch = useAppDispatch()
-  const user = useAppSelector((s) => s.auth.user)
-
-  const seller = isSellerUser(user)
 
   return (
     <div className="app-shell">
-      <header className="app-shell__header">
-        <div className="app-shell__left">
-          <Link to="/dashboard" className="app-shell__brand">
-            <span className="app-shell__brand-icon" aria-hidden>◆</span>
-            <span>Symple One</span>
-          </Link>
-          {seller && (
-            <nav className="app-shell__nav" aria-label="Main">
-              <NavLink to="/account/password" className="app-shell__nav-link">
-                Password
-              </NavLink>
-            </nav>
-          )}
-        </div>
-
-        {toolbar && <div className="app-shell__toolbar">{toolbar}</div>}
-
-        <div className="app-shell__right">
+      <AppSidebar />
+      <div className="app-shell__body">
+        <header className="app-shell__topbar">
+          <div className="app-shell__filters">{toolbar}</div>
           <div className="app-shell__header-tools">
             <HeaderAlertsBell />
             <ProfileMenu />
@@ -49,9 +31,9 @@ export function AppShell({ children, toolbar }: AppShellProps) {
               Sign out
             </button>
           </div>
-        </div>
-      </header>
-      <main className="app-shell__main">{children}</main>
+        </header>
+        <main className="app-shell__main">{children}</main>
+      </div>
     </div>
   )
 }

@@ -2,14 +2,17 @@ import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { AppShell } from '../../layout/AppShell'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
+import { DashboardPageHeader } from './layout/DashboardPageHeader'
 import { DashboardToolbar } from './layout/DashboardToolbar'
 import { AccountHealthModule } from './modules/charts/AccountHealthModule'
-import { AlertsModule } from './modules/alerts/AlertsModule'
-import { ProfitabilityModule } from './modules/charts/ProfitabilityModule'
 import { SalesTrendModule } from './modules/charts/SalesTrendModule'
+import { AlertsModule } from './modules/alerts/AlertsModule'
 import { StatCardsModule } from './modules/stat-cards/StatCardsModule'
-import { AdminSellersOverviewModule } from './modules/AdminSellersOverviewModule'
-import { MarketplaceTableModule } from './modules/tables/MarketplaceTableModule'
+import { OrderStatusModule } from './modules/widgets/OrderStatusModule'
+import { ProductPerformanceModule } from './modules/widgets/ProductPerformanceModule'
+import { QuickActionsModule } from './modules/widgets/QuickActionsModule'
+import { SalesByRegionModule } from './modules/widgets/SalesByRegionModule'
+import { TopCategoriesModule } from './modules/widgets/TopCategoriesModule'
 import { loadDashboard, setFilters } from './state/dashboardSlice'
 import './dashboard.css'
 
@@ -43,17 +46,22 @@ export function DashboardPage() {
   return (
     <AppShell toolbar={<DashboardToolbar />}>
       <div className="dash-content">
-        <AdminSellersOverviewModule />
+        <DashboardPageHeader />
         <StatCardsModule module={dashboard.stats} />
-        <div className="dash-charts-row">
+        <div className="dash-row dash-row--charts">
           <SalesTrendModule module={dashboard.salesTrend} />
-          <div className="dash-charts-row__pair">
-            <ProfitabilityModule module={dashboard.profitability} />
-            <AccountHealthModule module={dashboard.accountHealth} />
-          </div>
+          <SalesByRegionModule />
         </div>
-        <AlertsModule module={dashboard.alerts} />
-        <MarketplaceTableModule module={dashboard.marketplaces} />
+        <div className="dash-row dash-row--triple">
+          <ProductPerformanceModule />
+          <AccountHealthModule module={dashboard.accountHealth} />
+          <QuickActionsModule />
+        </div>
+        <div className="dash-row dash-row--triple" id="alerts">
+          <AlertsModule module={dashboard.alerts} />
+          <OrderStatusModule />
+          <TopCategoriesModule />
+        </div>
       </div>
     </AppShell>
   )

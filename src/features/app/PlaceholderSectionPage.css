@@ -1,0 +1,24 @@
+.placeholder-section {
+  max-width: 36rem;
+  background: #fff;
+  border: 1px solid #e8ecf3;
+  border-radius: 14px;
+  padding: 1.5rem 1.35rem;
+}
+
+.placeholder-section h1 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.placeholder-section p {
+  margin: 0.65rem 0 0;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.placeholder-section__hint {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6d28d9;
+}

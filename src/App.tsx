@@ -14,7 +14,17 @@ import { AmazonSellerConnectPage } from './features/amazon/AmazonSellerConnectPa
 import { ChangePasswordPage } from './features/account/ChangePasswordPage'
 import { ProfilePage } from './features/account/ProfilePage'
 import { AccountHealthReportPage } from './features/dashboard/AccountHealthReportPage'
+import { PlaceholderSectionPage } from './features/app/PlaceholderSectionPage'
 import { DashboardPage } from './features/dashboard/DashboardPage'
+
+function AppSection({ title }: { title: string }) {
+  return (
+    <PlaceholderSectionPage
+      title={title}
+      description={`Manage ${title.toLowerCase()} from this workspace.`}
+    />
+  )
+}
 
 function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -99,6 +109,13 @@ export default function App() {
             </AdminLayout>
           }
         />
+        <Route path="/app/orders" element={<ProtectedRoute><AppSection title="Orders" /></ProtectedRoute>} />
+        <Route path="/app/products" element={<ProtectedRoute><AppSection title="Products" /></ProtectedRoute>} />
+        <Route path="/app/inventory" element={<ProtectedRoute><AppSection title="Inventory" /></ProtectedRoute>} />
+        <Route path="/app/marketplaces" element={<ProtectedRoute><AppSection title="Marketplaces" /></ProtectedRoute>} />
+        <Route path="/app/advertising" element={<ProtectedRoute><AppSection title="Advertising" /></ProtectedRoute>} />
+        <Route path="/app/finance" element={<ProtectedRoute><AppSection title="Finance" /></ProtectedRoute>} />
+        <Route path="/app/reports" element={<ProtectedRoute><AppSection title="Reports" /></ProtectedRoute>} />
         <Route path="*" element={<AmazonOAuthRouteFallback />} />
       </Routes>
     </BrowserRouter>

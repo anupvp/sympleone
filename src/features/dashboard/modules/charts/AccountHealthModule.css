@@ -1,80 +1,93 @@
-.account-health-card .dash-module__title {
+.account-health-v2 .dash-module__title {
   font-size: 1rem;
 }
 
-.account-health-list {
+.account-health-v2__layout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.account-health-v2__gauge {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.account-health-v2__gauge-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.account-health-v2__gauge-center strong {
+  font-size: 1.35rem;
+  line-height: 1.1;
+}
+
+.account-health-v2__gauge-center span {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #16a34a;
+}
+
+.account-health-v2__list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 0.35rem;
+  min-width: 0;
 }
 
-.account-health-row {
+.account-health-v2__row {
   width: 100%;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(4.5rem, 5.5rem) 2.25rem;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.5rem;
-  padding: 0.45rem 0.35rem;
+  padding: 0.4rem 0.35rem;
   border: none;
-  border-radius: 8px;
   background: transparent;
   cursor: pointer;
   text-align: left;
   font: inherit;
-  color: inherit;
+  border-radius: 8px;
 }
 
-.account-health-row:hover {
+.account-health-v2__row:hover {
   background: #f8fafc;
 }
 
-.account-health-row__label {
+.account-health-v2__row-label {
+  display: block;
   font-size: 0.75rem;
   font-weight: 600;
   color: #334155;
-  line-height: 1.25;
 }
 
-.account-health-meter {
+.account-health-v2__row-detail {
   display: block;
-  height: 0.45rem;
-  border-radius: 999px;
-  background: #e2e8f0;
-  overflow: hidden;
-}
-
-.account-health-meter__fill {
-  display: block;
-  height: 100%;
-  border-radius: 999px;
-  min-width: 2px;
-  transition: width 0.25s ease;
-}
-
-.account-health-meter__fill--good {
-  background: #22c55e;
-}
-
-.account-health-meter__fill--warning {
-  background: #f59e0b;
-}
-
-.account-health-meter__fill--critical {
-  background: #ef4444;
-}
-
-.account-health-row__score {
   font-size: 0.6875rem;
-  font-weight: 700;
-  color: #64748b;
-  text-align: right;
+  color: #dc2626;
+  font-weight: 600;
+  margin-top: 0.1rem;
 }
 
-.account-health-empty {
-  margin: 0;
-  font-size: 0.8125rem;
-  color: #64748b;
+.account-health-v2__chevron {
+  color: #94a3b8;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 520px) {
+  .account-health-v2__layout {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
 }

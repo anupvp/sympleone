@@ -1,122 +1,40 @@
 .app-shell {
   min-height: 100vh;
-  background: #f1f5f9;
+  display: flex;
+  background: #f4f6fb;
   color: #0f172a;
 }
 
-.app-shell__header {
+.app-shell__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-shell__topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
-  padding: 0.75rem 1.25rem;
+  padding: 0.65rem 1.25rem;
   background: #fff;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e8ecf3;
   position: sticky;
   top: 0;
   z-index: 20;
 }
 
-.app-shell__left {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  flex-wrap: wrap;
-}
-
-.app-shell__brand {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 700;
-  font-size: 1.05rem;
-  color: inherit;
-  text-decoration: none;
-}
-
-.app-shell__brand:hover {
-  color: #4338ca;
-}
-
-.app-shell__brand-icon {
-  color: #6366f1;
-}
-
-.app-shell__nav {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  flex-wrap: wrap;
-}
-
-.app-shell__nav-link {
-  padding: 0.4rem 0.65rem;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #64748b;
-  text-decoration: none;
-}
-
-.app-shell__nav-link:hover {
-  color: #0f172a;
-  background: #f1f5f9;
-}
-
-.app-shell__nav-link.active {
-  color: #0f172a;
-  background: #e0e7ff;
-  color: #4338ca;
-}
-
-.app-shell__toolbar {
+.app-shell__filters {
   flex: 1;
-  display: flex;
-  justify-content: center;
   min-width: 200px;
-}
-
-.app-shell__right {
-  display: flex;
-  align-items: center;
 }
 
 .app-shell__header-tools {
   display: flex;
   align-items: center;
   gap: 0.65rem;
-}
-
-.app-shell__user {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.app-shell__avatar {
-  width: 2rem;
-  height: 2rem;
-  border-radius: 999px;
-  background: #6366f1;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-
-.app-shell__user-name {
-  margin: 0;
-  font-size: 0.8125rem;
-  font-weight: 600;
-}
-
-.app-shell__user-role {
-  margin: 0;
-  font-size: 0.6875rem;
-  color: #64748b;
 }
 
 .app-shell__signout {
@@ -127,13 +45,12 @@
   height: 2.25rem;
   font-size: 0.8125rem;
   font-weight: 500;
-  line-height: 1;
   cursor: pointer;
   white-space: nowrap;
 }
 
 .app-shell__main {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 1.25rem;
+  flex: 1;
+  padding: 1rem 1.25rem 1.5rem;
+  max-width: 100%;
 }

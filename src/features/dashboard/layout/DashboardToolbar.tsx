@@ -65,7 +65,7 @@ export function DashboardToolbar() {
           onChange={(e) => dispatch(setFilters({ sellerId: e.target.value }))}
           aria-label="Seller account"
         >
-          <option value="">Select seller…</option>
+          <option value="">All Sellers</option>
           {employee
             ? employeeSellers.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -89,6 +89,9 @@ export function DashboardToolbar() {
         aria-label="Marketplaces"
       >
         <option value="all">All Marketplaces</option>
+      </select>
+      <select className="dash-select" aria-label="Regions" defaultValue="all">
+        <option value="all">All Regions</option>
       </select>
       <SalesTrendPeriodControl />
     </div>

@@ -27,6 +27,8 @@ export interface StatCardData {
   comparisonLabel: string
   icon: StatIconKey
   accent: StatAccent
+  sparkline?: number[]
+  subline?: string
 }
 
 export interface SalesTrendPoint {
