@@ -42,7 +42,7 @@ const STATE_COLORS: Record<string, string> = {
   wb: '#15803d',
 }
 
-const FALLBACK_COLOR = '#cbd5e1'
+const EMPTY_STATE_COLOR = '#e2e8f0'
 
 interface IndiaSalesMapProps {
   salesByStateId: Record<string, number>
@@ -75,7 +75,7 @@ export function IndiaSalesMap({ salesByStateId, currencySymbol }: IndiaSalesMapP
               key={loc.id}
               d={loc.path}
               className={`india-map__state${isActive ? ' india-map__state--active' : ''}`}
-              fill={STATE_COLORS[loc.id] ?? FALLBACK_COLOR}
+              fill={amount > 0 ? (STATE_COLORS[loc.id] ?? EMPTY_STATE_COLOR) : EMPTY_STATE_COLOR}
               onMouseEnter={() => setActiveId(loc.id)}
               onMouseLeave={() => setActiveId(null)}
               onFocus={() => setActiveId(loc.id)}
