@@ -1,32 +1,52 @@
+import { useMemo } from 'react'
 import { ModuleFrame } from '../../components/ModuleFrame'
+import type { DashboardModuleState, SalesTrendData } from '../../types/dashboard.types'
+import { aggregateIndiaDestinations } from '../../utils/aggregateIndiaDestinations'
+import { formatSalesAmount } from '../../utils/salesTrendFormat'
+import { IndiaSalesMap } from './IndiaSalesMap'
 
-const REGIONS = [
-  { name: 'North America', value: '₹4.2L', growth: '+12.4%', x: '22%', y: '38%' },
-  { name: 'Europe', value: '₹3.1L', growth: '+8.1%', x: '48%', y: '32%' },
-  { name: 'India', value: '₹2.8L', growth: '+15.2%', x: '62%', y: '52%' },
-  { name: 'Middle East', value: '₹1.4L', growth: '+6.3%', x: '58%', y: '44%' },
-  { name: 'Rest of World', value: '₹0.9L', growth: '+4.0%', x: '75%', y: '58%' },
-]
+const TOP_STATE_COUNT = 5
 
-export function SalesByRegionModule() {
+interface SalesByRegionModuleProps {
+  module: DashboardModuleState<SalesTrendData>
+}
+
+export function SalesByRegionModule({ module }: SalesByRegionModuleProps) {
+  const symbol = module.data?.currencySymbol ?? '₹'
+  const states = useMemo(
+    () => aggregateIndiaDestinations(module.data?.destinations),
+    [module.data?.destinations],
+  )
+  const salesByStateId = useMemo(
+    () => Object.fromEntries(states.map((row) => [row.id, row.amount])),
+    [states],
+  )
+  const topStates = states.slice(0, TOP_STATE_COUNT)
+
   return (
-    <ModuleFrame title="Sales by Region" status="success" error={null} className="chart-card region-card">
-      <div className="region-map">
-        <div className="region-map__bg" aria-hidden />
-        {REGIONS.map((r) => (
-          <div
-            key={r.name}
-            className="region-pin"
-            style={{ left: r.x, top: r.y }}
-          >
-            <span className="region-pin__dot" />
-            <div className="region-pin__card">
-              <strong>{r.name}</strong>
-              <span>{r.value}</span>
-              <em>{r.growth}</em>
-            </div>
-          </div>
-        ))}
+    <ModuleFrame
+      title="Sales by Region"
+      status={module.status}
+      error={module.error}
+      className="chart-card region-card"
+    >
+      <div className="region-layout">
+        <IndiaSalesMap salesByStateId={salesByStateId} currencySymbol={symbol} />
+        {topStates.length > 0 ? (
+          <ol className="region-state-list">
+            {topStates.map((row, index) => (
+              <li key={row.id}>
+                <span className="region-state-list__rank">{index + 1}</span>
+                <span className="region-state-list__name">{row.name}</span>
+                <span className="region-state-list__value">
+                  {formatSalesAmount(row.amount, symbol)}
+                </span>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <p className="region-state-list__empty">No deliveries in this period.</p>
+        )}
       </div>
     </ModuleFrame>
   )

@@ -141,6 +141,7 @@ export const mockSalesTrend: SalesTrendData = {
       previousPeriodOrderCount: 71,
     },
   ],
+  destinations: [],
 }
 
 export const mockProfitability: ProfitabilityData = {

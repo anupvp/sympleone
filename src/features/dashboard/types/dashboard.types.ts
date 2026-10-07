@@ -43,10 +43,18 @@ export interface SalesTrendPoint {
   previousPeriodOrderCount: number
 }
 
+/** Delivery destination totals from the sales-trend response (ship-to state). */
+export interface SalesDestination {
+  state: string
+  amount: number
+  orderCount: number
+}
+
 export interface SalesTrendData {
   frequency: string
   points: SalesTrendPoint[]
   currencySymbol: string
+  destinations: SalesDestination[]
 }
 
 export interface ProfitabilitySegment {

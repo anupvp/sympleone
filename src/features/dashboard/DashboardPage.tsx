@@ -50,7 +50,7 @@ export function DashboardPage() {
         <StatCardsModule module={dashboard.stats} />
         <div className="dash-row dash-row--charts">
           <SalesTrendModule module={dashboard.salesTrend} />
-          <SalesByRegionModule />
+          <SalesByRegionModule module={dashboard.salesTrend} />
         </div>
         <div className="dash-row dash-row--triple">
           <ProductPerformanceModule />

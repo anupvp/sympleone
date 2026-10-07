@@ -1,4 +1,8 @@
-import type { SalesTrendData, SalesTrendPoint } from '../types/dashboard.types'
+import type {
+  SalesDestination,
+  SalesTrendData,
+  SalesTrendPoint,
+} from '../types/dashboard.types'
 
 function lakhToAmount(lakh: number): number {
   return Math.round(lakh * 100_000 * 100) / 100
@@ -35,9 +39,18 @@ export function normalizeSalesTrend(
     ? raw.points.map((p) => normalizePoint(p))
     : []
 
+  const destinations: SalesDestination[] = Array.isArray(raw?.destinations)
+    ? raw.destinations.map((row) => ({
+        state: String(row?.state ?? ''),
+        amount: Number(row?.amount) || 0,
+        orderCount: Number(row?.orderCount) || 0,
+      }))
+    : []
+
   return {
     frequency: raw?.frequency ?? 'Daily',
     currencySymbol: raw?.currencySymbol ?? '₹',
     points,
+    destinations,
   }
 }
