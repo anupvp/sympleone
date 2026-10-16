@@ -44,7 +44,8 @@ export function AppSidebar() {
         {items.map((item) => {
           const isHash = item.to.includes('#')
           const active = isHash
-            ? location.pathname === '/dashboard'
+            ? location.pathname === '/dashboard' &&
+              location.hash === item.to.slice(item.to.indexOf('#'))
             : location.pathname === item.to || location.pathname.startsWith(`${item.to}/`)
 
           if (isHash) {

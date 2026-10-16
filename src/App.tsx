@@ -35,9 +35,11 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
   )
 }
 
+const routerBasename = import.meta.env.BASE_URL.replace(/\/$/, '')
+
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={routerBasename || undefined}>
       <AmazonOAuthHandoff />
       <Routes>
         <Route path="/" element={<LoginPage />} />
