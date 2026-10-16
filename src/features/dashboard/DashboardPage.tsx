@@ -1,7 +1,8 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { AppShell } from '../../layout/AppShell'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
+import { needsSellerDashboardContext } from '../auth/auth.utils'
 import { DashboardPageHeader } from './layout/DashboardPageHeader'
 import { DashboardToolbar } from './layout/DashboardToolbar'
 import { AccountHealthModule } from './modules/charts/AccountHealthModule'
@@ -20,7 +21,13 @@ export function DashboardPage() {
   const dispatch = useAppDispatch()
   const [searchParams] = useSearchParams()
   const dashboard = useAppSelector((s) => s.dashboard)
+  const user = useAppSelector((s) => s.auth.user)
   const filters = dashboard.filters
+  const [sellerContextLoaded, setSellerContextLoaded] = useState(false)
+  const needsSeller = needsSellerDashboardContext(user)
+  const handleSellerContextLoaded = useCallback(() => {
+    setSellerContextLoaded(true)
+  }, [])
 
   useEffect(() => {
     const sellerId = searchParams.get('sellerId')
@@ -30,9 +37,15 @@ export function DashboardPage() {
   }, [searchParams, dispatch])
 
   useEffect(() => {
+    if (needsSeller && !filters.sellerId && !sellerContextLoaded) {
+      return
+    }
     void dispatch(loadDashboard())
   }, [
     dispatch,
+    needsSeller,
+    sellerContextLoaded,
+    filters.sellerId,
     filters.marketplaceId,
     filters.dateFrom,
     filters.dateTo,
@@ -40,11 +53,10 @@ export function DashboardPage() {
     filters.salesDailyDate,
     filters.salesMonth,
     filters.salesYear,
-    filters.sellerId,
   ])
 
   return (
-    <AppShell toolbar={<DashboardToolbar />}>
+    <AppShell toolbar={<DashboardToolbar onSellerContextLoaded={handleSellerContextLoaded} />}>
       <div className="dash-content">
         <DashboardPageHeader />
         <StatCardsModule module={dashboard.stats} />

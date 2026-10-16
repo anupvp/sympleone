@@ -10,7 +10,11 @@ import { isAdminUser, isEmployeeUser, needsSellerDashboardContext } from '../../
 import { SalesTrendPeriodControl } from '../components/SalesTrendPeriodControl'
 import { setFilters } from '../state/dashboardSlice'
 
-export function DashboardToolbar() {
+export function DashboardToolbar({
+  onSellerContextLoaded,
+}: {
+  onSellerContextLoaded?: () => void
+}) {
   const dispatch = useAppDispatch()
   const filters = useAppSelector((s) => s.dashboard.filters)
   const token = useAppSelector((s) => s.auth.accessToken)
@@ -26,6 +30,7 @@ export function DashboardToolbar() {
     if (!needsSeller || !token) {
       setSellers([])
       setEmployeeSellers([])
+      onSellerContextLoaded?.()
       return
     }
     try {
@@ -34,9 +39,10 @@ export function DashboardToolbar() {
         const rows = await fetchEmployeeAssignedSellers(token)
         setEmployeeSellers(rows)
         setSellers([])
-        if (!filters.sellerId && rows.length === 1) {
+        if (!filters.sellerId && rows.length > 0) {
           dispatch(setFilters({ sellerId: rows[0].id }))
         }
+        onSellerContextLoaded?.()
         return
       }
       if (admin) {
@@ -46,11 +52,13 @@ export function DashboardToolbar() {
         if (!filters.sellerId && rows.length === 1) {
           dispatch(setFilters({ sellerId: rows[0].id }))
         }
+        onSellerContextLoaded?.()
       }
     } catch (e) {
       setSellerLoadError(e instanceof Error ? e.message : 'Could not load sellers')
+      onSellerContextLoaded?.()
     }
-  }, [needsSeller, token, filters.sellerId, dispatch, admin, employee])
+  }, [needsSeller, token, filters.sellerId, dispatch, admin, employee, onSellerContextLoaded])
 
   useEffect(() => {
     void loadSellers()

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { AppShell } from '../../layout/AppShell'
 import { useAppSelector } from '../../app/hooks'
 import { needsSellerDashboardContext } from '../auth/auth.utils'
@@ -26,6 +26,56 @@ function formatTotal(row: OrderRow) {
   }
   const sym = row.order_total.currency_code === 'INR' ? '₹' : `${row.order_total.currency_code} `
   return `${sym}${row.order_total.amount}`
+}
+
+type OrderTabId =
+  | 'all'
+  | 'pending'
+  | 'pendingavailability'
+  | 'unshipped'
+  | 'partiallyshipped'
+  | 'shipped'
+  | 'delivered'
+  | 'canceled'
+  | 'unfulfillable'
+  | 'invoiceunconfirmed'
+  | 'other'
+
+const ORDER_TABS: { id: OrderTabId; label: string }[] = [
+  { id: 'all', label: 'All' },
+  { id: 'pending', label: 'Pending' },
+  { id: 'unshipped', label: 'Unshipped' },
+  { id: 'partiallyshipped', label: 'Partially shipped' },
+  { id: 'shipped', label: 'Shipped' },
+  { id: 'delivered', label: 'Delivered' },
+  { id: 'canceled', label: 'Canceled' },
+  { id: 'unfulfillable', label: 'Unfulfillable' },
+  { id: 'invoiceunconfirmed', label: 'Invoice unconfirmed' },
+  { id: 'pendingavailability', label: 'Pending availability' },
+]
+
+function orderTabId(row: OrderRow): OrderTabId {
+  const easyShip = (row.easy_ship_status ?? '').replace(/[\s_-]/g, '').toLowerCase()
+  if (easyShip === 'delivered') {
+    return 'delivered'
+  }
+  const status = (row.order_status ?? '').replace(/[\s_-]/g, '').toLowerCase()
+  if (status === 'cancelled' || status === 'canceled') {
+    return 'canceled'
+  }
+  const known: OrderTabId[] = [
+    'pending',
+    'pendingavailability',
+    'unshipped',
+    'partiallyshipped',
+    'shipped',
+    'unfulfillable',
+    'invoiceunconfirmed',
+  ]
+  if (known.includes(status as OrderTabId)) {
+    return status as OrderTabId
+  }
+  return 'other'
 }
 
 const ORDERS_SKELETON_ROWS = 8
@@ -58,6 +108,7 @@ export function OrdersPage() {
   const [rows, setRows] = useState<OrderRow[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [tab, setTab] = useState<OrderTabId>('all')
 
   const load = useCallback(async () => {
     if (!token) {
@@ -85,6 +136,33 @@ export function OrdersPage() {
     void load()
   }, [load])
 
+  const counts = useMemo(() => {
+    const tally: Record<OrderTabId, number> = {
+      all: rows.length,
+      pending: 0,
+      pendingavailability: 0,
+      unshipped: 0,
+      partiallyshipped: 0,
+      shipped: 0,
+      delivered: 0,
+      canceled: 0,
+      unfulfillable: 0,
+      invoiceunconfirmed: 0,
+      other: 0,
+    }
+    for (const row of rows) {
+      tally[orderTabId(row)] += 1
+    }
+    return tally
+  }, [rows])
+
+  const visibleRows = useMemo(
+    () => (tab === 'all' ? rows : rows.filter((row) => orderTabId(row) === tab)),
+    [rows, tab],
+  )
+
+  const tabs = ORDER_TABS.filter((item) => item.id !== 'other' || counts.other > 0)
+
   return (
     <AppShell toolbar={<DashboardToolbar />}>
       <div className="orders-page">
@@ -98,11 +176,31 @@ export function OrdersPage() {
 
         {error && <p className="orders-page__error" role="alert">{error}</p>}
 
+        <div className="orders-tabs" role="tablist" aria-label="Order status">
+          {tabs.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              role="tab"
+              aria-selected={tab === item.id}
+              className={`orders-tabs__btn${tab === item.id ? ' orders-tabs__btn--active' : ''}`}
+              onClick={() => setTab(item.id)}
+            >
+              {item.label}
+              <span className="orders-tabs__count">{counts[item.id]}</span>
+            </button>
+          ))}
+        </div>
+
         {!loading && !error && rows.length === 0 && (
           <p className="orders-page__empty">No orders found for this period.</p>
         )}
 
-        {(loading || rows.length > 0) && (
+        {!loading && !error && rows.length > 0 && visibleRows.length === 0 && (
+          <p className="orders-page__empty">No orders in this status for the selected period.</p>
+        )}
+
+        {(loading || visibleRows.length > 0) && (
           <div className="orders-table-wrap" aria-busy={loading}>
             <table className="orders-table">
               <thead>
@@ -122,7 +220,7 @@ export function OrdersPage() {
                 {loading ? (
                   <OrdersTableSkeletonBody />
                 ) : (
-                  rows.map((row) => (
+                  visibleRows.map((row) => (
                     <tr key={row.amazon_order_id}>
                       <td className="orders-table__id">{row.amazon_order_id}</td>
                       <td>{formatPurchaseDate(row.purchase_date)}</td>
