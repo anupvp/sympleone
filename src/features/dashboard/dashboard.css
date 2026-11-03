@@ -378,6 +378,27 @@
 .stat-card__change.is-up { color: #16a34a; }
 .stat-card__change.is-down { color: #dc2626; }
 
+.stat-card__change--muted {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.stat-card__spark--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 88px;
+  min-height: 36px;
+  font-size: 1.25rem;
+  color: #cbd5e1;
+  letter-spacing: 0.15em;
+}
+
+.stat-card--placeholder .stat-card__value {
+  color: #94a3b8;
+  letter-spacing: 0.08em;
+}
+
 .stat-card__compare {
   margin: 0.35rem 0 0;
   font-size: 0.6875rem;

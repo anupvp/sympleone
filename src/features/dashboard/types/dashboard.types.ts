@@ -29,6 +29,8 @@ export interface StatCardData {
   accent: StatAccent
   sparkline?: number[]
   subline?: string
+  /** No seller selected / onboarded — show dashes instead of demo numbers */
+  placeholder?: boolean
 }
 
 export interface SalesTrendPoint {

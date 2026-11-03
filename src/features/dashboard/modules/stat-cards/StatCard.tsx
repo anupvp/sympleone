@@ -9,24 +9,36 @@ const iconPaths: Record<StatCardData['icon'], string> = {
 }
 
 export function StatCard({ metric }: { metric: StatCardData }) {
+  const placeholder = metric.placeholder === true
   const positive = metric.changePercent >= 0
   const spark = metric.sparkline ?? [10, 12, 11, 14, 13, 15, 14, 16, 18]
 
   return (
-    <article className={`stat-card stat-card--${metric.accent}`}>
+    <article className={`stat-card stat-card--${metric.accent}${placeholder ? ' stat-card--placeholder' : ''}`}>
       <div className="stat-card__top">
         <div>
           <p className="stat-card__label">{metric.label}</p>
           <p className="stat-card__value">{metric.value}</p>
-          <p className={`stat-card__change ${positive ? 'is-up' : 'is-down'}`}>
-            {positive ? '↑' : '↓'} {Math.abs(metric.changePercent).toFixed(1)}%{' '}
-            <span className="stat-card__compare-inline">{metric.comparisonLabel}</span>
-          </p>
-          {metric.subline && <p className="stat-card__subline">{metric.subline}</p>}
+          {placeholder ? (
+            <p className="stat-card__change stat-card__change--muted">—</p>
+          ) : (
+            <p className={`stat-card__change ${positive ? 'is-up' : 'is-down'}`}>
+              {positive ? '↑' : '↓'} {Math.abs(metric.changePercent).toFixed(1)}%{' '}
+              <span className="stat-card__compare-inline">{metric.comparisonLabel}</span>
+            </p>
+          )}
+          {!placeholder && metric.subline && <p className="stat-card__subline">{metric.subline}</p>}
         </div>
-        <div className="stat-card__spark">
-          <Sparkline values={spark} width={88} height={36} positive={positive} />
-        </div>
+        {!placeholder && (
+          <div className="stat-card__spark">
+            <Sparkline values={spark} width={88} height={36} positive={positive} />
+          </div>
+        )}
+        {placeholder && (
+          <div className="stat-card__spark stat-card__spark--placeholder" aria-hidden>
+            —
+          </div>
+        )}
       </div>
       <div className="stat-card__icon" aria-hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
