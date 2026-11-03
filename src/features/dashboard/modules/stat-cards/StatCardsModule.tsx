@@ -24,19 +24,28 @@ function placeholderStatCards(): StatCardData[] {
 function mergeKpiCards(apiCards: StatCardData[] | null | undefined): StatCardData[] {
   const template = mockStatCards
   if (!apiCards?.length) {
-    return template
+    return placeholderStatCards()
   }
   const byId = new Map(apiCards.map((c) => [c.id, c]))
   return template.map((card) => {
     const fromApi = byId.get(card.id)
     if (!fromApi) {
-      return card
+      return {
+        ...card,
+        value: '—',
+        changePercent: 0,
+        comparisonLabel: '',
+        subline: undefined,
+        sparkline: undefined,
+        placeholder: true,
+      }
     }
     return {
       ...card,
       value: fromApi.value,
       changePercent: fromApi.changePercent,
       comparisonLabel: fromApi.comparisonLabel || card.comparisonLabel,
+      placeholder: false,
     }
   })
 }
