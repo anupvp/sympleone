@@ -45,6 +45,7 @@ function mergeKpiCards(apiCards: StatCardData[] | null | undefined): StatCardDat
       value: fromApi.value,
       changePercent: fromApi.changePercent,
       comparisonLabel: fromApi.comparisonLabel || card.comparisonLabel,
+      subline: fromApi.subline,
       placeholder: false,
     }
   })
