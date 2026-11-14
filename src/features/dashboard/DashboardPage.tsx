@@ -25,8 +25,8 @@ export function DashboardPage() {
   const user = useAppSelector((s) => s.auth.user)
   const filters = dashboard.filters
   const [sellerContextLoaded, setSellerContextLoaded] = useState(false)
-  const [exportLoading, setExportLoading] = useState(false)
-  const [exportError, setExportError] = useState<string | null>(null)
+  const [exportState, setExportState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [exportMessage, setExportMessage] = useState<string | null>(null)
   const needsSeller = needsSellerDashboardContext(user)
   const noSellerContext = needsSeller && !filters.sellerId?.trim()
   const handleSellerContextLoaded = useCallback(() => {
@@ -61,18 +61,26 @@ export function DashboardPage() {
 
   const handleExportReport = useCallback(async () => {
     if (noSellerContext) {
-      setExportError('Select a seller account to export a report.')
+      setExportState('error')
+      setExportMessage('Select a seller account to export a report.')
       return
     }
-    setExportError(null)
-    setExportLoading(true)
+    setExportState('loading')
+    setExportMessage(
+      'Requesting merchant listings from Amazon. This usually takes 1–3 minutes — keep this tab open.',
+    )
     try {
       await downloadDashboardExportReport(filters)
+      setExportState('success')
+      setExportMessage('Report downloaded. Check your Downloads folder.')
+      window.setTimeout(() => {
+        setExportState('idle')
+        setExportMessage(null)
+      }, 8000)
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Could not download report'
-      setExportError(message)
-    } finally {
-      setExportLoading(false)
+      setExportState('error')
+      setExportMessage(message)
     }
   }, [filters, noSellerContext])
 
@@ -81,9 +89,9 @@ export function DashboardPage() {
       <div className="dash-content">
         <DashboardPageHeader
           onExportReport={handleExportReport}
-          exportLoading={exportLoading}
+          exportState={exportState}
           exportDisabled={noSellerContext}
-          exportError={exportError}
+          exportMessage={exportMessage}
         />
         <StatCardsModule module={dashboard.stats} />
         <div className="dash-row dash-row--charts">

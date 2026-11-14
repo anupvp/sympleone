@@ -1,34 +1,58 @@
+type ExportUiState = 'idle' | 'loading' | 'success' | 'error'
+
 interface DashboardPageHeaderProps {
-  onExportReport?: () => void
-  exportLoading?: boolean
+  onExportReport?: () => void | Promise<void>
+  exportState?: ExportUiState
   exportDisabled?: boolean
-  exportError?: string | null
+  exportMessage?: string | null
 }
 
 export function DashboardPageHeader({
   onExportReport,
-  exportLoading = false,
+  exportState = 'idle',
   exportDisabled = false,
-  exportError,
+  exportMessage,
 }: DashboardPageHeaderProps) {
+  const loading = exportState === 'loading'
+  const canExport = Boolean(onExportReport) && !exportDisabled && !loading
+
+  const handleClick = () => {
+    if (!canExport || !onExportReport) {
+      return
+    }
+    void onExportReport()
+  }
+
+  let buttonLabel = 'Export Report'
+  if (loading) {
+    buttonLabel = 'Preparing report…'
+  } else if (exportState === 'success') {
+    buttonLabel = 'Downloaded'
+  }
+
   return (
     <header className="dash-page-header">
-      <h1 className="dash-page-header__title">Dashboard</h1>
-      <div className="dash-page-header__export-wrap">
-        {exportError ? (
-          <p className="dash-page-header__export-error" role="alert">
-            {exportError}
+      <div className="dash-page-header__lead">
+        <h1 className="dash-page-header__title">Dashboard</h1>
+        {exportMessage ? (
+          <p
+            className={`dash-page-header__export-banner dash-page-header__export-banner--${exportState}`}
+            role="status"
+            aria-live="polite"
+          >
+            {exportMessage}
           </p>
         ) : null}
-        <button
-          type="button"
-          className="dash-page-header__export"
-          onClick={onExportReport}
-          disabled={exportDisabled || exportLoading || !onExportReport}
-        >
-          {exportLoading ? 'Preparing report…' : 'Export Report'}
-        </button>
       </div>
+      <button
+        type="button"
+        className="dash-page-header__export"
+        onClick={handleClick}
+        disabled={!canExport}
+        aria-busy={loading}
+      >
+        {buttonLabel}
+      </button>
     </header>
   )
 }

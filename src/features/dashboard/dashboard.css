@@ -254,10 +254,17 @@
 
 .dash-page-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
   margin-bottom: 0.25rem;
+}
+
+.dash-page-header__lead {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
 }
 
 .dash-page-header__title {
@@ -266,19 +273,27 @@
   font-weight: 700;
 }
 
-.dash-page-header__export-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.35rem;
+.dash-page-header__export-banner {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  max-width: 36rem;
 }
 
-.dash-page-header__export-error {
-  margin: 0;
-  font-size: 0.75rem;
+.dash-page-header__export-banner--loading {
+  color: #1d4ed8;
+}
+
+.dash-page-header__export-banner--success {
+  color: #15803d;
+}
+
+.dash-page-header__export-banner--error {
   color: #dc2626;
-  max-width: 16rem;
-  text-align: right;
+}
+
+.dash-page-header__export-banner--idle {
+  color: #64748b;
 }
 
 .dash-page-header__export {
