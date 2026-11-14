@@ -14,6 +14,7 @@ import { ProductPerformanceModule } from './modules/widgets/ProductPerformanceMo
 import { QuickActionsModule } from './modules/widgets/QuickActionsModule'
 import { SalesByRegionModule } from './modules/widgets/SalesByRegionModule'
 import { TopCategoriesModule } from './modules/widgets/TopCategoriesModule'
+import { downloadDashboardExportReport } from './api/exportReport'
 import { loadDashboard, setFilters } from './state/dashboardSlice'
 import './dashboard.css'
 
@@ -24,7 +25,10 @@ export function DashboardPage() {
   const user = useAppSelector((s) => s.auth.user)
   const filters = dashboard.filters
   const [sellerContextLoaded, setSellerContextLoaded] = useState(false)
+  const [exportLoading, setExportLoading] = useState(false)
+  const [exportError, setExportError] = useState<string | null>(null)
   const needsSeller = needsSellerDashboardContext(user)
+  const noSellerContext = needsSeller && !filters.sellerId?.trim()
   const handleSellerContextLoaded = useCallback(() => {
     setSellerContextLoaded(true)
   }, [])
@@ -55,10 +59,32 @@ export function DashboardPage() {
     filters.salesYear,
   ])
 
+  const handleExportReport = useCallback(async () => {
+    if (noSellerContext) {
+      setExportError('Select a seller account to export a report.')
+      return
+    }
+    setExportError(null)
+    setExportLoading(true)
+    try {
+      await downloadDashboardExportReport(filters)
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Could not download report'
+      setExportError(message)
+    } finally {
+      setExportLoading(false)
+    }
+  }, [filters, noSellerContext])
+
   return (
     <AppShell toolbar={<DashboardToolbar onSellerContextLoaded={handleSellerContextLoaded} />}>
       <div className="dash-content">
-        <DashboardPageHeader />
+        <DashboardPageHeader
+          onExportReport={handleExportReport}
+          exportLoading={exportLoading}
+          exportDisabled={noSellerContext}
+          exportError={exportError}
+        />
         <StatCardsModule module={dashboard.stats} />
         <div className="dash-row dash-row--charts">
           <SalesTrendModule module={dashboard.salesTrend} />

@@ -41,6 +41,7 @@ export const API_CONFIG = {
       accountHealth: '/dashboard/account-health',
       alerts: '/dashboard/alerts',
       marketplaces: '/dashboard/marketplaces',
+      exportReport: '/dashboard/export-report',
     },
     admin: {
       employees: '/admin/employees',
