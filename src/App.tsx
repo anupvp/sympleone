@@ -16,6 +16,7 @@ import { ProfilePage } from './features/account/ProfilePage'
 import { AccountHealthReportPage } from './features/dashboard/AccountHealthReportPage'
 import { PlaceholderSectionPage } from './features/app/PlaceholderSectionPage'
 import { OrdersPage } from './features/orders/OrdersPage'
+import { ReportsPage } from './features/reports/ReportsPage'
 import { DashboardPage } from './features/dashboard/DashboardPage'
 
 function AppSection({ title }: { title: string }) {
@@ -118,7 +119,7 @@ export default function App() {
         <Route path="/app/marketplaces" element={<ProtectedRoute><AppSection title="Marketplaces" /></ProtectedRoute>} />
         <Route path="/app/advertising" element={<ProtectedRoute><AppSection title="Advertising" /></ProtectedRoute>} />
         <Route path="/app/finance" element={<ProtectedRoute><AppSection title="Finance" /></ProtectedRoute>} />
-        <Route path="/app/reports" element={<ProtectedRoute><AppSection title="Reports" /></ProtectedRoute>} />
+        <Route path="/app/reports" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
         <Route path="*" element={<AmazonOAuthRouteFallback />} />
       </Routes>
     </BrowserRouter>

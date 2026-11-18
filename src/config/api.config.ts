@@ -43,6 +43,9 @@ export const API_CONFIG = {
       marketplaces: '/dashboard/marketplaces',
       exportReport: '/dashboard/export-report',
     },
+    reports: {
+      finances: '/reports/finances',
+    },
     admin: {
       employees: '/admin/employees',
       sellers: '/admin/sellers',

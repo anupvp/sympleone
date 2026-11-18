@@ -43,8 +43,15 @@ function errorMessageFromBody(parsed: unknown, status: number): string {
         .join('; ')
     }
   }
+  if (typeof parsed === 'object' && parsed !== null && 'reportId' in parsed) {
+    return 'Report was created on Amazon but download did not complete. Redeploy the latest backend and try again.'
+  }
   if (typeof parsed === 'string' && parsed.trim()) {
-    return parsed.slice(0, 280)
+    const trimmed = parsed.trim()
+    if (trimmed.includes('reportId')) {
+      return 'Report was created on Amazon but download did not complete. Redeploy the latest backend and try again.'
+    }
+    return trimmed.slice(0, 280)
   }
   return `Export failed (${status})`
 }
@@ -75,7 +82,10 @@ export async function downloadDashboardExportReport(filters: DashboardFilters): 
   const timeout = window.setTimeout(() => controller.abort(), EXPORT_TIMEOUT_MS)
 
   try {
-    const headers: Record<string, string> = { Accept: 'text/plain, application/octet-stream' }
+    const headers: Record<string, string> = {
+      Accept:
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/octet-stream',
+    }
     headers.Authorization = `Bearer ${token}`
 
     const response = await fetch(url, {
@@ -92,7 +102,28 @@ export async function downloadDashboardExportReport(filters: DashboardFilters): 
       } catch {
         /* plain text error */
       }
+      if (
+        typeof parsed === 'object' &&
+        parsed !== null &&
+        'reportId' in parsed &&
+        !('detail' in parsed)
+      ) {
+        throw new Error(
+          'Report was created but was not finished on the server. Deploy the latest API, then try again.',
+        )
+      }
       throw new ApiError(errorMessageFromBody(parsed, response.status), response.status, parsed)
+    }
+
+    const contentType = response.headers.get('content-type') ?? ''
+    if (contentType.includes('application/json')) {
+      const payload = (await response.json()) as { reportId?: string }
+      if (payload.reportId) {
+        throw new Error(
+          'Export stopped after creating the report. Update the backend so it polls Amazon and returns the file.',
+        )
+      }
+      throw new Error('Unexpected JSON response from export; expected a report file download.')
     }
 
     const blob = await response.blob()
@@ -102,7 +133,7 @@ export async function downloadDashboardExportReport(filters: DashboardFilters): 
 
     const filename =
       filenameFromDisposition(response.headers.get('Content-Disposition')) ??
-      `merchant-listings-${filters.dateFrom}-to-${filters.dateTo}.txt`
+      `merchant-listings-${filters.dateFrom}-to-${filters.dateTo}.xlsx`
 
     triggerBrowserDownload(blob, filename)
   } catch (err) {
