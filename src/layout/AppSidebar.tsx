@@ -10,6 +10,7 @@ function NavIcon({ id }: { id: string }) {
     orders: 'M6 4h12v16H6z M9 8h6',
     products: 'M5 8h14l-1 10H6L5 8z M9 8V6h6v2',
     inventory: 'M4 8h16v10H4z M8 12h8',
+    'fba-inventory': 'M4 8h16v10H4z M6 12h4v4H6z M14 12h4v4h-4z',
     marketplaces: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z',
     advertising: 'M4 12h16M12 4v16',
     finance: 'M6 8h12v10H6z M9 11h6',

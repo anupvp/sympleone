@@ -17,6 +17,7 @@ import { AccountHealthReportPage } from './features/dashboard/AccountHealthRepor
 import { PlaceholderSectionPage } from './features/app/PlaceholderSectionPage'
 import { OrdersPage } from './features/orders/OrdersPage'
 import { ReportsPage } from './features/reports/ReportsPage'
+import { FbaInventoryPage } from './features/inventory/FbaInventoryPage'
 import { DashboardPage } from './features/dashboard/DashboardPage'
 
 function AppSection({ title }: { title: string }) {
@@ -115,7 +116,11 @@ export default function App() {
         />
         <Route path="/app/orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
         <Route path="/app/products" element={<ProtectedRoute><AppSection title="Products" /></ProtectedRoute>} />
-        <Route path="/app/inventory" element={<ProtectedRoute><AppSection title="Inventory" /></ProtectedRoute>} />
+        <Route path="/app/inventory" element={<ProtectedRoute><FbaInventoryPage /></ProtectedRoute>} />
+        <Route
+          path="/app/fba-inventory"
+          element={<ProtectedRoute><FbaInventoryPage /></ProtectedRoute>}
+        />
         <Route path="/app/marketplaces" element={<ProtectedRoute><AppSection title="Marketplaces" /></ProtectedRoute>} />
         <Route path="/app/advertising" element={<ProtectedRoute><AppSection title="Advertising" /></ProtectedRoute>} />
         <Route path="/app/finance" element={<ProtectedRoute><AppSection title="Finance" /></ProtectedRoute>} />

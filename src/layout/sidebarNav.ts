@@ -10,6 +10,7 @@ export const SIDEBAR_NAV: SidebarNavItem[] = [
   { id: 'orders', label: 'Orders', to: '/app/orders' },
   { id: 'products', label: 'Products', to: '/app/products' },
   { id: 'inventory', label: 'Inventory', to: '/app/inventory' },
+  { id: 'fba-inventory', label: 'FBA Inventory', to: '/app/fba-inventory' },
   { id: 'marketplaces', label: 'Marketplaces', to: '/app/marketplaces' },
   { id: 'advertising', label: 'Advertising', to: '/app/advertising' },
   { id: 'finance', label: 'Finance', to: '/app/finance' },

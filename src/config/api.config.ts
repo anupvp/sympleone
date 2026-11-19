@@ -46,6 +46,9 @@ export const API_CONFIG = {
     reports: {
       finances: '/reports/finances',
     },
+    inventory: {
+      fba: '/inventory/fba',
+    },
     admin: {
       employees: '/admin/employees',
       sellers: '/admin/sellers',
