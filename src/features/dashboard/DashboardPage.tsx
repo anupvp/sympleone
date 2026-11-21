@@ -99,7 +99,7 @@ export function DashboardPage() {
           <SalesByRegionModule module={dashboard.salesTrend} />
         </div>
         <div className="dash-row dash-row--triple">
-          <ProductPerformanceModule />
+          <ProductPerformanceModule filters={filters} disabled={noSellerContext} />
           <AccountHealthModule module={dashboard.accountHealth} />
           <QuickActionsModule />
         </div>

@@ -49,6 +49,12 @@ export const API_CONFIG = {
     inventory: {
       fba: '/inventory/fba',
     },
+    productPerformance: {
+      sync: '/v1/product-performance/sync',
+      top: '/v1/product-performance/top',
+      low: '/v1/product-performance/low',
+      summary: '/v1/product-performance/summary',
+    },
     admin: {
       employees: '/admin/employees',
       sellers: '/admin/sellers',
