@@ -126,7 +126,10 @@ export default function App() {
         />
         <Route path="/app/marketplaces" element={<ProtectedRoute><AppSection title="Marketplaces" /></ProtectedRoute>} />
         <Route path="/app/advertising" element={<ProtectedRoute><AppSection title="Advertising" /></ProtectedRoute>} />
-        <Route path="/app/finance" element={<ProtectedRoute><AppSection title="Finance" /></ProtectedRoute>} />
+        <Route
+          path="/app/finance"
+          element={<ProtectedRoute><Navigate to="/app/reports" replace /></ProtectedRoute>}
+        />
         <Route path="/app/reports" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
         <Route path="*" element={<AmazonOAuthRouteFallback />} />
       </Routes>

@@ -12,7 +12,6 @@ export const SIDEBAR_NAV: SidebarNavItem[] = [
   { id: 'fba-inventory', label: 'FBA Inventory', to: '/app/fba-inventory' },
   { id: 'marketplaces', label: 'Marketplaces', to: '/app/marketplaces' },
   { id: 'advertising', label: 'Advertising', to: '/app/advertising' },
-  { id: 'finance', label: 'Finance', to: '/app/finance' },
   { id: 'sellers', label: 'Sellers', to: '/admin/sellers', adminOnly: true },
   { id: 'reports', label: 'Reports', to: '/app/reports' },
   { id: 'alerts', label: 'Alerts', to: '/dashboard#alerts' },

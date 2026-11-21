@@ -12,7 +12,6 @@ function NavIcon({ id }: { id: string }) {
     'fba-inventory': 'M4 8h16v10H4z M6 12h4v4H6z M14 12h4v4h-4z',
     marketplaces: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z',
     advertising: 'M4 12h16M12 4v16',
-    finance: 'M6 8h12v10H6z M9 11h6',
     sellers: 'M8 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M4 20v-1a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v1',
     reports: 'M6 4h9l5 5v11H6z',
     alerts: 'M15 17H9l-1-4a5 5 0 0 1 10 0l-1 4z',
