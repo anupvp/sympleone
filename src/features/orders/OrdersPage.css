@@ -9,6 +9,41 @@
   color: #64748b;
 }
 
+.orders-page__views {
+  display: flex;
+  gap: 0.35rem;
+  margin: 0 0 1rem;
+}
+
+.orders-page__view-btn {
+  border: 1px solid #e8ecf3;
+  background: #fff;
+  border-radius: 10px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.orders-page__view-btn--active {
+  background: #4338ca;
+  border-color: #4338ca;
+  color: #fff;
+}
+
+.orders-fulfillment-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 0.65rem;
+}
+
+.orders-tabs__btn--compact {
+  font-size: 0.6875rem;
+  padding: 0.25rem 0.55rem;
+}
+
 .orders-page__error {
   margin: 0 0 1rem;
   padding: 0.65rem 0.75rem;
@@ -181,4 +216,80 @@
 .orders-badge--invoiceunconfirmed {
   background: #ffedd5;
   color: #c2410c;
+}
+
+.orders-type-badge {
+  display: inline-block;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+.orders-type-badge--fba {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.orders-type-badge--fbm {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.orders-type-badge--self-ship {
+  background: #ccfbf1;
+  color: #0f766e;
+}
+
+.orders-table__product-name {
+  max-width: 14rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.orders-inventory-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+  gap: 0.65rem;
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+}
+
+.orders-inventory-metrics li {
+  border: 1px solid #e8ecf3;
+  border-radius: 12px;
+  padding: 0.65rem 0.75rem;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.orders-inventory-metrics__label {
+  font-size: 0.6875rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.orders-inventory-metrics li strong {
+  font-size: 1.1rem;
+  color: #0f172a;
+}
+
+.orders-inventory-panel__actions {
+  margin-bottom: 0.75rem;
+}
+
+.orders-inventory-panel__link {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #4338ca;
+  text-decoration: none;
+}
+
+.orders-inventory-panel__more {
+  margin: 0.65rem 0.75rem 0.75rem;
 }
