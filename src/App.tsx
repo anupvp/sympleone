@@ -116,7 +116,10 @@ export default function App() {
         />
         <Route path="/app/orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
         <Route path="/app/products" element={<ProtectedRoute><AppSection title="Products" /></ProtectedRoute>} />
-        <Route path="/app/inventory" element={<ProtectedRoute><FbaInventoryPage /></ProtectedRoute>} />
+        <Route
+          path="/app/inventory"
+          element={<ProtectedRoute><Navigate to="/app/fba-inventory" replace /></ProtectedRoute>}
+        />
         <Route
           path="/app/fba-inventory"
           element={<ProtectedRoute><FbaInventoryPage /></ProtectedRoute>}
