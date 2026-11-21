@@ -1110,6 +1110,13 @@
   display: flex;
   gap: 0.75rem;
   align-items: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .order-status-layout {
+    justify-content: center;
+  }
 }
 
 .order-status-donut {

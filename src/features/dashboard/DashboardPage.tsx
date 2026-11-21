@@ -105,7 +105,7 @@ export function DashboardPage() {
         </div>
         <div className="dash-row dash-row--triple" id="alerts">
           <AlertsModule module={dashboard.alerts} />
-          <OrderStatusModule />
+          <OrderStatusModule filters={filters} disabled={noSellerContext} />
           <TopCategoriesModule />
         </div>
       </div>

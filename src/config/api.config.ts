@@ -55,6 +55,11 @@ export const API_CONFIG = {
       low: '/v1/product-performance/low',
       summary: '/v1/product-performance/summary',
     },
+    orderStatus: {
+      status: '/v1/dashboard/order-status',
+      sync: '/v1/dashboard/order-status/sync',
+      syncStatus: '/v1/dashboard/order-status/sync-status',
+    },
     admin: {
       employees: '/admin/employees',
       sellers: '/admin/sellers',
