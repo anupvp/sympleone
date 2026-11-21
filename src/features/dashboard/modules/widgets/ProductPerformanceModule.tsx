@@ -182,9 +182,16 @@ export function ProductPerformanceModule({ filters, disabled }: ProductPerforman
                   {status === 'success' &&
                     rows.map((row) => (
                       <tr key={row.sku}>
-                        <td>
-                          <span className="product-table__name">{row.product_name}</span>
-                          <span className="product-table__sku">{row.sku}</span>
+                        <td className="product-table__product-cell">
+                          <span
+                            className="product-table__name product-table__name--truncate"
+                            title={row.product_name}
+                          >
+                            {row.product_name}
+                          </span>
+                          <span className="product-table__sku" title={row.sku}>
+                            {row.sku}
+                          </span>
                         </td>
                         <td>{formatInrCompact(row.sales)}</td>
                         <td>{row.orders.toLocaleString('en-IN')}</td>

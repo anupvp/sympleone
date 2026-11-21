@@ -951,10 +951,32 @@
   color: #94a3b8;
 }
 
+.product-card .product-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.product-card .product-table th:first-child,
+.product-card .product-table td:first-child {
+  width: 42%;
+}
+
+.product-card .product-table td.product-table__product-cell {
+  max-width: 0;
+  overflow: hidden;
+}
+
 .product-table__name {
   display: block;
   font-weight: 600;
   color: #334155;
+}
+
+.product-table__name--truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: default;
 }
 
 .product-table__sku {
