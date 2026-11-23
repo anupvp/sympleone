@@ -51,7 +51,7 @@ export function ReportsPage() {
       <div className="reports-page">
         <div className="reports-page__head">
           <div>
-            <h1 className="reports-page__title">Reports</h1>
+            <h1 className="reports-page__title">Reports &amp; Analytics</h1>
             <p className="reports-page__meta">
               Amazon settlement and finance activity for your selected period.
             </p>

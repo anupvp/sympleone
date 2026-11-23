@@ -5,7 +5,7 @@ const ACTIONS = [
   { label: 'Connect Seller', hint: 'Link Amazon account', to: '/amazon/connect', color: '#7c3aed' },
   { label: 'Add Product', hint: 'Create listing', to: '/app/products', color: '#2563eb' },
   { label: 'Manage Inventory', hint: 'Stock levels', to: '/app/fba-inventory', color: '#0d9488' },
-  { label: 'View Reports', hint: 'Analytics', to: '/app/reports', color: '#d97706' },
+  { label: 'Reports & Analytics', hint: 'Overview', to: '/app/reports', color: '#d97706' },
 ]
 
 export function QuickActionsModule() {
