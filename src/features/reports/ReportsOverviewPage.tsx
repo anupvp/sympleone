@@ -4,7 +4,9 @@ import { needsSellerDashboardContext } from '../auth/auth.utils'
 import { fetchStatCards, fetchSalesTrend } from '../dashboard/api/dashboardApi'
 import type { SalesTrendPoint, StatCardData } from '../dashboard/types/dashboard.types'
 import { fetchOrderStatus, type OrderStatusData } from '../dashboard/api/orderStatusApi'
+import { downloadDashboardExportReport } from '../dashboard/api/exportReport'
 import { AllReportsGrid } from './AllReportsGrid'
+import { ReportOverviewHeaderActions } from './ReportOverviewHeaderActions'
 import { reportBySlug } from './reportsCatalog'
 import { ReportPageHeader } from './ReportPageHeader'
 import './ReportsPage.css'
@@ -145,7 +147,9 @@ export function ReportsOverviewPage() {
   const [salesPoints, setSalesPoints] = useState<SalesTrendPoint[]>([])
   const [currencySymbol, setCurrencySymbol] = useState('₹')
   const [loading, setLoading] = useState(false)
+  const [exportBusy, setExportBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [exportError, setExportError] = useState<string | null>(null)
 
   const load = useCallback(async () => {
     if (!token) {
@@ -202,16 +206,58 @@ export function ReportsOverviewPage() {
   const gmv = stat('gmv')
   const ordersCard = stat('net-sales')
 
+  const exportOverviewCsv = useCallback(() => {
+    const lines = [
+      'Metric,Value',
+      `Total Sales,${gmv?.value ?? '—'}`,
+      `Total Orders,${ordersCard?.value ?? orderCounts.total}`,
+      `Delivered Orders,${orderCounts.delivered}`,
+      `Pending Orders,${orderCounts.pending}`,
+      `Cancelled Orders,${orderCounts.cancelled}`,
+      `Period,${filters.dateFrom} – ${filters.dateTo}`,
+    ]
+    const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+    anchor.href = url
+    anchor.download = `overview-report-${filters.dateFrom}-to-${filters.dateTo}.csv`
+    anchor.click()
+    URL.revokeObjectURL(url)
+  }, [filters.dateFrom, filters.dateTo, gmv?.value, orderCounts, ordersCard?.value])
+
+  const exportListings = useCallback(async () => {
+    setExportBusy(true)
+    setExportError(null)
+    try {
+      await downloadDashboardExportReport(filters)
+    } catch (e) {
+      setExportError(e instanceof Error ? e.message : 'Export failed')
+    } finally {
+      setExportBusy(false)
+    }
+  }, [filters])
+
   return (
     <div className="reports-page">
       <ReportPageHeader
         report={REPORT}
         actions={
-          <button type="button" className="reports-page__refresh" onClick={() => void load()} disabled={loading}>
-            {loading ? 'Loading…' : 'Refresh'}
-          </button>
+          <ReportOverviewHeaderActions
+            onPrepare={() => void load()}
+            prepareBusy={loading}
+            prepareDisabled={needsSeller && !filters.sellerId?.trim()}
+            onExportOverview={exportOverviewCsv}
+            onExportListings={() => void exportListings()}
+            exportBusy={exportBusy}
+          />
         }
       />
+
+      {exportError && (
+        <p className="reports-page__error" role="alert">
+          {exportError}
+        </p>
+      )}
 
       {error && (
         <p className="reports-page__error" role="alert">

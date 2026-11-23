@@ -8,12 +8,12 @@ interface ReportPageHeaderProps {
 
 export function ReportPageHeader({ report, actions }: ReportPageHeaderProps) {
   return (
-    <header className="reports-page__head">
-      <div>
+    <header className="reports-head-card">
+      <div className="reports-head-card__text">
         <h1 className="reports-page__title">{report.title}</h1>
         <p className="reports-page__meta">{report.description}</p>
       </div>
-      {actions}
+      {actions ? <div className="reports-head-card__actions">{actions}</div> : null}
     </header>
   )
 }

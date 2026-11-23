@@ -2,6 +2,29 @@
   padding: 0 0 2rem;
 }
 
+.reports-head-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  padding: 1.1rem 1.25rem;
+  background: #f8fafc;
+  border: 1px solid #e8ecf3;
+  border-radius: 14px;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+}
+
+.reports-head-card__text {
+  min-width: 0;
+  flex: 1 1 16rem;
+}
+
+.reports-head-card__actions {
+  flex-shrink: 0;
+}
+
 .reports-page__head {
   display: flex;
   align-items: flex-start;
@@ -13,6 +36,9 @@
 .reports-page__title {
   margin: 0;
   font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #0f172a;
 }
 
 .reports-page__meta {
@@ -461,4 +487,104 @@
   font-size: 0.8125rem;
   color: #64748b;
   line-height: 1.6;
+}
+
+.reports-head-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.reports-head-actions__note {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin: 0.35rem 0 0;
+  font-size: 0.6875rem;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.reports-head-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 10px;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.reports-head-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.reports-head-btn--outline {
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: #334155;
+}
+
+.reports-head-btn--outline:hover:not(:disabled) {
+  background: #f9fafb;
+  border-color: #cbd5e1;
+}
+
+.reports-head-btn--primary {
+  border: none;
+  background: #6366f1;
+  color: #fff;
+  box-shadow: 0 1px 2px rgb(99 102 241 / 0.35);
+}
+
+.reports-head-btn--primary:hover:not(:disabled) {
+  background: #4f46e5;
+}
+
+.reports-head-btn--export {
+  padding-right: 0.65rem;
+}
+
+.reports-export {
+  position: relative;
+}
+
+.reports-export__menu {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  z-index: 20;
+  min-width: 12.5rem;
+  margin: 0;
+  padding: 0.35rem;
+  list-style: none;
+  background: #fff;
+  border: 1px solid #e8ecf3;
+  border-radius: 10px;
+  box-shadow: 0 10px 28px rgb(15 23 42 / 0.12);
+}
+
+.reports-export__item {
+  display: block;
+  width: 100%;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  padding: 0.5rem 0.65rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #334155;
+  text-align: left;
+  cursor: pointer;
+}
+
+.reports-export__item:hover {
+  background: #f4f6fb;
+  color: #4338ca;
 }
