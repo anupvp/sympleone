@@ -16,7 +16,10 @@ import { ProfilePage } from './features/account/ProfilePage'
 import { AccountHealthReportPage } from './features/dashboard/AccountHealthReportPage'
 import { PlaceholderSectionPage } from './features/app/PlaceholderSectionPage'
 import { OrdersPage } from './features/orders/OrdersPage'
-import { ReportsPage } from './features/reports/ReportsPage'
+import { ReportHubPage } from './features/reports/ReportHubPage'
+import { ReportsLayout } from './features/reports/ReportsLayout'
+import { ReportsOverviewPage } from './features/reports/ReportsOverviewPage'
+import { TransactionReportPage } from './features/reports/TransactionReportPage'
 import { FbaInventoryPage } from './features/inventory/FbaInventoryPage'
 import { DashboardPage } from './features/dashboard/DashboardPage'
 
@@ -128,9 +131,21 @@ export default function App() {
         <Route path="/app/advertising" element={<ProtectedRoute><AppSection title="Advertising" /></ProtectedRoute>} />
         <Route
           path="/app/finance"
-          element={<ProtectedRoute><Navigate to="/app/reports" replace /></ProtectedRoute>}
+          element={<ProtectedRoute><Navigate to="/app/reports/overview" replace /></ProtectedRoute>}
         />
-        <Route path="/app/reports" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
+        <Route
+          path="/app/reports"
+          element={
+            <ProtectedRoute>
+              <ReportsLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<Navigate to="overview" replace />} />
+          <Route path="overview" element={<ReportsOverviewPage />} />
+          <Route path="transaction" element={<TransactionReportPage />} />
+          <Route path=":reportSlug" element={<ReportHubPage />} />
+        </Route>
         <Route path="*" element={<AmazonOAuthRouteFallback />} />
       </Routes>
     </BrowserRouter>

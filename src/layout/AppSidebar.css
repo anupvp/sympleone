@@ -57,6 +57,43 @@
   font-weight: 600;
 }
 
+.app-sidebar__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.app-sidebar__subnav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  margin: 0.15rem 0 0.35rem 0.35rem;
+  padding-left: 0.65rem;
+  border-left: 2px solid #e9e5ff;
+}
+
+.app-sidebar__sublink {
+  display: block;
+  padding: 0.35rem 0.55rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #64748b;
+  text-decoration: none;
+  line-height: 1.35;
+}
+
+.app-sidebar__sublink:hover {
+  background: #f4f6fb;
+  color: #0f172a;
+}
+
+.app-sidebar__sublink--active {
+  background: #6d28d9;
+  color: #fff;
+  font-weight: 600;
+}
+
 .app-sidebar__help {
   margin: 1rem 0.75rem 1.25rem;
   padding: 0.85rem;

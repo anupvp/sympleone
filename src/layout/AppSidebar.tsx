@@ -1,6 +1,7 @@
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useAppSelector } from '../app/hooks'
 import { isAdminUser } from '../features/auth/auth.utils'
+import { REPORT_CATALOG } from '../features/reports/reportsCatalog'
 import { SIDEBAR_NAV } from './sidebarNav'
 import './AppSidebar.css'
 
@@ -31,6 +32,8 @@ export function AppSidebar() {
   const location = useLocation()
 
   const items = SIDEBAR_NAV.filter((item) => !item.adminOnly || admin)
+  const reportsActive = location.pathname.startsWith('/app/reports')
+  const reportLinks = REPORT_CATALOG.filter((r) => !r.adminOnly || admin)
 
   return (
     <aside className="app-sidebar" aria-label="Main navigation">
@@ -60,18 +63,37 @@ export function AppSidebar() {
             )
           }
 
+          const isReports = item.id === 'reports'
+
           return (
-            <NavLink
-              key={item.id}
-              to={item.to}
-              className={({ isActive }) =>
-                `app-sidebar__link${isActive ? ' app-sidebar__link--active' : ''}`
-              }
-              end={item.to === '/dashboard'}
-            >
-              <NavIcon id={item.id} />
-              {item.label}
-            </NavLink>
+            <div key={item.id} className="app-sidebar__group">
+              <NavLink
+                to={item.to}
+                className={({ isActive }) =>
+                  `app-sidebar__link${isActive || (isReports && reportsActive) ? ' app-sidebar__link--active' : ''}`
+                }
+                end={item.to === '/dashboard'}
+              >
+                <NavIcon id={item.id} />
+                {item.label}
+              </NavLink>
+              {isReports && (
+                <div className="app-sidebar__subnav" aria-label="Reports & Analytics">
+                  {reportLinks.map((report) => (
+                    <NavLink
+                      key={report.id}
+                      to={`/app/reports/${report.slug}`}
+                      className={({ isActive }) =>
+                        `app-sidebar__sublink${isActive ? ' app-sidebar__sublink--active' : ''}`
+                      }
+                      end
+                    >
+                      {report.label}
+                    </NavLink>
+                  ))}
+                </div>
+              )}
+            </div>
           )
         })}
       </nav>

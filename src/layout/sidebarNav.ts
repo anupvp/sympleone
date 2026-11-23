@@ -13,7 +13,7 @@ export const SIDEBAR_NAV: SidebarNavItem[] = [
   { id: 'marketplaces', label: 'Marketplaces', to: '/app/marketplaces' },
   { id: 'advertising', label: 'Advertising', to: '/app/advertising' },
   { id: 'sellers', label: 'Sellers', to: '/admin/sellers', adminOnly: true },
-  { id: 'reports', label: 'Reports & Analytics', to: '/app/reports' },
+  { id: 'reports', label: 'Reports & Analytics', to: '/app/reports/overview' },
   { id: 'alerts', label: 'Alerts', to: '/dashboard#alerts' },
   { id: 'settings', label: 'Settings', to: '/account/profile' },
 ]
