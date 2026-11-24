@@ -3,8 +3,12 @@ import { useAppSelector } from '../../app/hooks'
 import { needsSellerDashboardContext } from '../auth/auth.utils'
 import { fetchMarketplaces, fetchStatCards, fetchSalesTrend } from '../dashboard/api/dashboardApi'
 import type { MarketplaceRow, SalesTrendPoint, StatCardData } from '../dashboard/types/dashboard.types'
-import { fetchOrderStatus, type OrderStatusData } from '../dashboard/api/orderStatusApi'
 import { downloadDashboardExportReport } from '../dashboard/api/exportReport'
+import { fetchOrders } from '../orders/ordersApi'
+import {
+  buildOrderDistributionFromOrders,
+  countOrdersByStatusTab,
+} from '../orders/orderMetrics'
 import { AllReportsGrid } from './AllReportsGrid'
 import { buildOverviewKpis, OverviewKpiCards } from './overview/OverviewKpiCards'
 import { OverviewMarketplaceWidget } from './overview/OverviewMarketplaceWidget'
@@ -31,7 +35,6 @@ export function ReportsOverviewPage() {
   const needsSeller = needsSellerDashboardContext(user)
 
   const [stats, setStats] = useState<StatCardData[]>([])
-  const [orderStatus, setOrderStatus] = useState<OrderStatusData | null>(null)
   const [salesPoints, setSalesPoints] = useState<SalesTrendPoint[]>([])
   const [marketplaces, setMarketplaces] = useState<MarketplaceRow[]>([])
   const [currencySymbol, setCurrencySymbol] = useState('₹')
@@ -40,6 +43,7 @@ export function ReportsOverviewPage() {
   const [loadErrors, setLoadErrors] = useState<string[]>([])
   const [exportError, setExportError] = useState<string | null>(null)
   const [sellerError, setSellerError] = useState<string | null>(null)
+  const [ordersForMetrics, setOrdersForMetrics] = useState<Awaited<ReturnType<typeof fetchOrders>>['orders']>([])
 
   const load = useCallback(async () => {
     if (!token) {
@@ -48,19 +52,19 @@ export function ReportsOverviewPage() {
     if (needsSeller && !filters.sellerId?.trim()) {
       setSellerError('Select a seller account to load overview metrics.')
       setStats([])
-      setOrderStatus(null)
       setSalesPoints([])
       setMarketplaces([])
+      setOrdersForMetrics([])
       return
     }
     setSellerError(null)
     setLoading(true)
     setLoadErrors([])
 
-    const [statsResult, trendResult, statusResult, marketplaceResult] = await Promise.allSettled([
+    const [statsResult, trendResult, ordersResult, marketplaceResult] = await Promise.allSettled([
       fetchStatCards(token, filters),
       fetchSalesTrend(token, filters),
-      fetchOrderStatus(token, filters),
+      fetchOrders(token, filters),
       fetchMarketplaces(token, filters),
     ])
 
@@ -81,11 +85,11 @@ export function ReportsOverviewPage() {
       errors.push(`Sales trend: ${messageFromReason(trendResult.reason)}`)
     }
 
-    if (statusResult.status === 'fulfilled') {
-      setOrderStatus(statusResult.value.data)
+    if (ordersResult.status === 'fulfilled') {
+      setOrdersForMetrics(ordersResult.value.orders)
     } else {
-      setOrderStatus(null)
-      errors.push(`Order status: ${messageFromReason(statusResult.reason)}`)
+      setOrdersForMetrics([])
+      errors.push(`Orders: ${messageFromReason(ordersResult.reason)}`)
     }
 
     if (marketplaceResult.status === 'fulfilled') {
@@ -103,28 +107,20 @@ export function ReportsOverviewPage() {
     void load()
   }, [load])
 
-  const orderCounts = useMemo(() => {
-    const map: Record<string, number> = {}
-    for (const seg of orderStatus?.statuses ?? []) {
-      map[seg.status] = seg.count
-    }
-    return {
-      delivered: map.DELIVERED ?? 0,
-      pending: (map.PROCESSING ?? 0) + (map.IN_TRANSIT ?? 0),
-      cancelled: map.CANCELLED ?? 0,
-      total: orderStatus?.total_orders ?? 0,
-    }
-  }, [orderStatus])
+  const orderCounts = useMemo(() => countOrdersByStatusTab(ordersForMetrics), [ordersForMetrics])
+  const orderDistribution = useMemo(
+    () => buildOrderDistributionFromOrders(ordersForMetrics),
+    [ordersForMetrics],
+  )
 
   const kpiMetrics = useMemo(() => buildOverviewKpis(stats, orderCounts), [stats, orderCounts])
   const gmv = stats.find((s) => s.id === 'gmv')
-  const ordersCard = stats.find((s) => s.id === 'net-sales')
 
   const exportOverviewCsv = useCallback(() => {
     const lines = [
       'Metric,Value',
       `Total Sales,${gmv?.value ?? '—'}`,
-      `Total Orders,${ordersCard?.value ?? orderCounts.total}`,
+      `Total Orders,${orderCounts.total}`,
       `Delivered Orders,${orderCounts.delivered}`,
       `Pending Orders,${orderCounts.pending}`,
       `Cancelled Orders,${orderCounts.cancelled}`,
@@ -137,7 +133,7 @@ export function ReportsOverviewPage() {
     anchor.download = `overview-report-${filters.dateFrom}-to-${filters.dateTo}.csv`
     anchor.click()
     URL.revokeObjectURL(url)
-  }, [filters.dateFrom, filters.dateTo, gmv?.value, orderCounts, ordersCard?.value])
+  }, [filters.dateFrom, filters.dateTo, gmv?.value, orderCounts])
 
   const exportListings = useCallback(async () => {
     setExportBusy(true)
@@ -190,8 +186,15 @@ export function ReportsOverviewPage() {
       <OverviewKpiCards metrics={kpiMetrics} loading={loading} />
 
       <div className="reports-widgets-row">
-        <OverviewSalesTrendWidget points={salesPoints} currencySymbol={currencySymbol} />
-        <OverviewOrderStatusWidget data={orderStatus} />
+        <OverviewSalesTrendWidget
+          points={salesPoints}
+          currencySymbol={currencySymbol}
+          periodEnd={filters.dateTo}
+        />
+        <OverviewOrderStatusWidget
+          total={orderDistribution.total}
+          segments={orderDistribution.segments}
+        />
         <OverviewMarketplaceWidget
           rows={marketplaces}
           salesPoints={salesPoints}

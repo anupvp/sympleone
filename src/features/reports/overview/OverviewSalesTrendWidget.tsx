@@ -12,46 +12,102 @@ interface MonthBucket {
 }
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const MONTH_WINDOW = 5
 
-function bucketByMonth(points: SalesTrendPoint[]): MonthBucket[] {
-  const map = new Map<string, MonthBucket>()
-  for (const p of points) {
-    const key = p.date.slice(0, 7)
-    const month = Number(p.date.slice(5, 7))
-    const label = MONTHS[month - 1] ?? key
-    const existing = map.get(key)
-    if (!existing) {
-      map.set(key, {
-        key,
-        label,
-        sales: p.netSalesAmount,
-        orders: p.orderCount,
-      })
-    } else {
-      existing.sales += p.netSalesAmount
-      existing.orders += p.orderCount
+function monthKey(year: number, monthIndex0: number): string {
+  const month = monthIndex0 + 1
+  return `${year}-${String(month).padStart(2, '0')}`
+}
+
+function labelForMonthKey(key: string): string {
+  const month = Number(key.slice(5, 7))
+  return MONTHS[month - 1] ?? key
+}
+
+function parsePointDate(dateStr: string): Date | null {
+  const raw = dateStr.trim()
+  if (!raw) {
+    return null
+  }
+  if (/^\d{4}-\d{2}-\d{2}/.test(raw)) {
+    const d = new Date(`${raw.slice(0, 10)}T12:00:00`)
+    return Number.isNaN(d.getTime()) ? null : d
+  }
+  const d = new Date(raw)
+  return Number.isNaN(d.getTime()) ? null : d
+}
+
+function parsePeriodEnd(periodEnd: string | undefined): Date {
+  if (periodEnd?.trim()) {
+    const d = parsePointDate(periodEnd.trim().slice(0, 10))
+    if (d) {
+      return d
     }
   }
-  return [...map.values()].sort((a, b) => a.key.localeCompare(b.key))
+  return new Date()
+}
+
+/** Rolling 5 calendar months ending at the anchor month (inclusive). */
+function buildFiveMonthKeys(anchor: Date): string[] {
+  const keys: string[] = []
+  const anchorMonth = new Date(anchor.getFullYear(), anchor.getMonth(), 1)
+  for (let offset = MONTH_WINDOW - 1; offset >= 0; offset -= 1) {
+    const d = new Date(anchorMonth.getFullYear(), anchorMonth.getMonth() - offset, 1)
+    keys.push(monthKey(d.getFullYear(), d.getMonth()))
+  }
+  return keys
+}
+
+function aggregateFiveMonths(points: SalesTrendPoint[], periodEnd: string | undefined): MonthBucket[] {
+  const anchor = parsePeriodEnd(periodEnd)
+  const monthKeys = buildFiveMonthKeys(anchor)
+  const map = new Map(
+    monthKeys.map((key) => [key, { key, label: labelForMonthKey(key), sales: 0, orders: 0 }]),
+  )
+
+  const allowed = new Set(monthKeys)
+  for (const p of points) {
+    const d = parsePointDate(p.date)
+    if (!d) {
+      continue
+    }
+    const key = monthKey(d.getFullYear(), d.getMonth())
+    if (!allowed.has(key)) {
+      continue
+    }
+    const bucket = map.get(key)
+    if (!bucket) {
+      continue
+    }
+    bucket.sales += p.netSalesAmount
+    bucket.orders += p.orderCount
+  }
+
+  return monthKeys.map((key) => map.get(key)!)
 }
 
 export function OverviewSalesTrendWidget({
   points,
   currencySymbol,
+  periodEnd,
 }: {
   points: SalesTrendPoint[]
   currencySymbol: string
+  /** Dashboard filter end date (YYYY-MM-DD); chart ends on this month. */
+  periodEnd?: string
 }) {
   const [mode, setMode] = useState<TrendMode>('sales')
-  const buckets = useMemo(() => bucketByMonth(points), [points])
+  const buckets = useMemo(() => aggregateFiveMonths(points, periodEnd), [points, periodEnd])
 
-  if (buckets.length === 0) {
+  const hasAnyData = buckets.some((b) => b.sales > 0 || b.orders > 0)
+
+  if (!hasAnyData) {
     return (
       <section className="reports-widget">
         <header className="reports-widget__head">
           <h2 className="reports-widget__title">Sales Trend</h2>
         </header>
-        <p className="reports-panel__empty">No sales trend for this period.</p>
+        <p className="reports-panel__empty">No sales trend for the last five months.</p>
       </section>
     )
   }
@@ -59,8 +115,18 @@ export function OverviewSalesTrendWidget({
   const values = buckets.map((b) => (mode === 'sales' ? b.sales : b.orders))
   const max = Math.max(...values, 1)
   const chartH = 140
-  const barGap = 10
-  const barW = Math.min(48, Math.max(28, Math.floor(320 / buckets.length) - barGap))
+  const barW = 40
+
+  const formatYAxis = (value: number) => {
+    if (mode === 'sales') {
+      const lakhs = value / 100_000
+      if (lakhs >= 0.05) {
+        return `${lakhs.toFixed(1)}L`
+      }
+      return Math.round(value).toLocaleString('en-IN')
+    }
+    return Math.round(value).toLocaleString('en-IN')
+  }
 
   return (
     <section className="reports-widget reports-widget--wide">
@@ -87,10 +153,10 @@ export function OverviewSalesTrendWidget({
           </button>
         </div>
       </header>
-      <div className="reports-bar-chart" role="img">
+      <div className="reports-bar-chart reports-bar-chart--five" role="img">
         <div className="reports-bar-chart__y">
           {[0, 0.25, 0.5, 0.75, 1].map((t) => (
-            <span key={t}>{Math.round(max * t).toLocaleString('en-IN')}</span>
+            <span key={t}>{formatYAxis(max * t)}</span>
           ))}
         </div>
         <div className="reports-bar-chart__plot">

@@ -45,7 +45,7 @@ export function buildOverviewKpis(
     {
       id: 'total-orders',
       label: 'Total Orders',
-      value: orders?.value ?? orderCounts.total.toLocaleString('en-IN'),
+      value: orderCounts.total.toLocaleString('en-IN'),
       changePercent: orders?.changePercent,
       comparisonLabel: orders?.comparisonLabel,
       accent: 'blue',

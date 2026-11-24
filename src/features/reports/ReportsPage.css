@@ -488,6 +488,11 @@
   overflow-x: auto;
 }
 
+.reports-bar-chart--five .reports-bar-chart__plot {
+  justify-content: space-around;
+  overflow-x: visible;
+}
+
 .reports-bar-chart__col {
   display: flex;
   flex-direction: column;

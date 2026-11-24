@@ -1,8 +1,12 @@
-import type { OrderStatusData } from '../../dashboard/api/orderStatusApi'
+import type { OrderDistributionSegment } from '../../orders/orderMetrics'
 
-export function OverviewOrderStatusWidget({ data }: { data: OrderStatusData | null }) {
-  const segments = data?.statuses ?? []
-  const total = data?.total_orders ?? 0
+export function OverviewOrderStatusWidget({
+  total,
+  segments,
+}: {
+  total: number
+  segments: OrderDistributionSegment[]
+}) {
   const size = 128
   const stroke = 16
   const r = (size - stroke) / 2
@@ -17,9 +21,7 @@ export function OverviewOrderStatusWidget({ data }: { data: OrderStatusData | nu
         <h2 className="reports-widget__title">Order Status Distribution</h2>
       </header>
       {total === 0 ? (
-        <p className="reports-panel__empty">
-          Sync orders from the dashboard or Orders page, then click Prepare Report.
-        </p>
+        <p className="reports-panel__empty">No orders in this period. Open Orders to verify the same date range.</p>
       ) : (
         <div className="reports-order-status">
           <div className="reports-donut-wrap__chart reports-donut-wrap__chart--lg">

@@ -11,6 +11,7 @@ import {
   type OrderRow,
   type OrdersFulfillmentSummary,
 } from './ordersApi'
+import { orderStatusTabId, type OrderStatusTabId } from './orderMetrics'
 import './OrdersPage.css'
 
 function formatPurchaseDate(iso: string | null) {
@@ -35,18 +36,7 @@ function formatTotal(row: OrderRow) {
   return `${sym}${row.order_total.amount}`
 }
 
-type OrderTabId =
-  | 'all'
-  | 'pending'
-  | 'pendingavailability'
-  | 'unshipped'
-  | 'partiallyshipped'
-  | 'shipped'
-  | 'delivered'
-  | 'canceled'
-  | 'unfulfillable'
-  | 'invoiceunconfirmed'
-  | 'other'
+type OrderTabId = 'all' | OrderStatusTabId
 
 type FulfillmentFilter = 'all' | OrderFulfillmentType
 
@@ -72,29 +62,7 @@ const FULFILLMENT_TABS: { id: FulfillmentFilter; label: string }[] = [
   { id: 'SELF_SHIP', label: 'Self Ship' },
 ]
 
-function orderTabId(row: OrderRow): OrderTabId {
-  const easyShip = (row.easy_ship_status ?? '').replace(/[\s_-]/g, '').toLowerCase()
-  if (easyShip === 'delivered') {
-    return 'delivered'
-  }
-  const status = (row.order_status ?? '').replace(/[\s_-]/g, '').toLowerCase()
-  if (status === 'cancelled' || status === 'canceled') {
-    return 'canceled'
-  }
-  const known: OrderTabId[] = [
-    'pending',
-    'pendingavailability',
-    'unshipped',
-    'partiallyshipped',
-    'shipped',
-    'unfulfillable',
-    'invoiceunconfirmed',
-  ]
-  if (known.includes(status as OrderTabId)) {
-    return status as OrderTabId
-  }
-  return 'other'
-}
+const orderTabId = orderStatusTabId
 
 function fulfillmentCount(summary: OrdersFulfillmentSummary, id: FulfillmentFilter, rows: OrderRow[]) {
   if (id === 'all') {
