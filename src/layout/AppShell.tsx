@@ -1,6 +1,7 @@
 import { useAppDispatch } from '../app/hooks'
 import { logout } from '../features/auth/authSlice'
 import { HeaderAlertsBell } from './HeaderAlertsBell'
+import { HeaderGlobalSearch } from './HeaderGlobalSearch'
 import { AppSidebar } from './AppSidebar'
 import { ProfileMenu } from './ProfileMenu'
 import './AppShell.css'
@@ -19,8 +20,13 @@ export function AppShell({ children, toolbar }: AppShellProps) {
       <AppSidebar />
       <div className="app-shell__body">
         <header className="app-shell__topbar">
-          <div className="app-shell__filters">{toolbar}</div>
+          {toolbar ? (
+            <div className="app-shell__filters">{toolbar}</div>
+          ) : (
+            <div className="app-shell__topbar-spacer" aria-hidden />
+          )}
           <div className="app-shell__header-tools">
+            <HeaderGlobalSearch />
             <HeaderAlertsBell />
             <ProfileMenu />
             <button

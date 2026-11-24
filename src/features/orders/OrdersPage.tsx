@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import { AppShell } from '../../layout/AppShell'
 import { useAppSelector } from '../../app/hooks'
 import { needsSellerDashboardContext } from '../auth/auth.utils'
-import { DashboardToolbar } from '../dashboard/layout/DashboardToolbar'
+import { resolveSalesDateRange } from '../dashboard/utils/salesPeriodUtils'
+import { OrdersContextFilters } from './OrdersContextFilters'
 import { fetchStatCards } from '../dashboard/api/dashboardApi'
 import { fetchFbaInventory, type FbaInventoryResponse } from '../inventory/fbaInventoryApi'
 import {
@@ -20,6 +21,7 @@ import {
   type OrdersKpiId,
 } from './OrdersSummaryKpis'
 import { downloadOrdersCsv } from './ordersExport'
+import './OrdersContextFilters.css'
 import './OrdersPage.css'
 
 function formatPurchaseDate(iso: string | null) {
@@ -159,6 +161,21 @@ function fulfillmentBadgeClass(type: OrderFulfillmentType): string {
   return 'orders-type-badge orders-type-badge--fbm'
 }
 
+function orderMatchesSearch(row: OrderRow, query: string): boolean {
+  const needle = query.trim().toLowerCase()
+  if (!needle) {
+    return true
+  }
+  return (
+    row.amazon_order_id.toLowerCase().includes(needle) ||
+    (row.order_status ?? '').toLowerCase().includes(needle) ||
+    (row.ship_city ?? '').toLowerCase().includes(needle) ||
+    (row.ship_state ?? '').toLowerCase().includes(needle) ||
+    row.fulfillment_type.toLowerCase().includes(needle) ||
+    (row.fulfillment_label ?? '').toLowerCase().includes(needle)
+  )
+}
+
 const EMPTY_SUMMARY: OrdersFulfillmentSummary = {
   total: 0,
   fba: 0,
@@ -170,6 +187,7 @@ export function OrdersPage() {
   const token = useAppSelector((s) => s.auth.accessToken)
   const user = useAppSelector((s) => s.auth.user)
   const filters = useAppSelector((s) => s.dashboard.filters)
+  const globalSearch = useAppSelector((s) => s.layout.globalSearchQuery)
   const needsSeller = needsSellerDashboardContext(user)
 
   const [rows, setRows] = useState<OrderRow[]>([])
@@ -285,10 +303,11 @@ export function OrdersPage() {
     [rowsForFulfillment.length, statusTally],
   )
 
-  const visibleRows = useMemo(
-    () => (tab === 'all' ? rowsForFulfillment : rowsForFulfillment.filter((row) => orderTabId(row) === tab)),
-    [rowsForFulfillment, tab],
-  )
+  const visibleRows = useMemo(() => {
+    const byTab =
+      tab === 'all' ? rowsForFulfillment : rowsForFulfillment.filter((row) => orderTabId(row) === tab)
+    return byTab.filter((row) => orderMatchesSearch(row, globalSearch))
+  }, [rowsForFulfillment, tab, globalSearch])
 
   const totalPages = Math.max(1, Math.ceil(visibleRows.length / pageSize))
   const safePage = Math.min(page, totalPages)
@@ -297,22 +316,26 @@ export function OrdersPage() {
 
   const activeKpiId = tabToKpiId(tab)
 
+  const { dateFrom, dateTo } = resolveSalesDateRange(filters)
   const periodLabel =
-    filters.dateFrom && filters.dateTo
-      ? `${new Date(filters.dateFrom).toLocaleDateString(undefined, { month: 'short', day: '2-digit', year: 'numeric' })} – ${new Date(filters.dateTo).toLocaleDateString(undefined, { month: 'short', day: '2-digit', year: 'numeric' })}`
+    dateFrom && dateTo
+      ? `${new Date(dateFrom).toLocaleDateString(undefined, { month: 'short', day: '2-digit', year: 'numeric' })} – ${new Date(dateTo).toLocaleDateString(undefined, { month: 'short', day: '2-digit', year: 'numeric' })}`
       : ''
 
   const exportFilename = `orders-${filters.dateFrom ?? 'export'}-to-${filters.dateTo ?? 'export'}.csv`
 
   return (
-    <AppShell toolbar={<DashboardToolbar />}>
+    <AppShell>
       <div className="orders-page">
         <header className="orders-page__head">
-          <h1>Orders</h1>
-          <p className="orders-page__meta">
-            Amazon SP-API for the selected period
-            {periodLabel ? ` · ${periodLabel}` : ''}
-          </p>
+          <div className="orders-page__head-main">
+            <h1>Orders</h1>
+            <p className="orders-page__meta">
+              Amazon SP-API for the selected period
+              {periodLabel ? ` · ${periodLabel}` : ''}
+            </p>
+          </div>
+          <OrdersContextFilters />
         </header>
 
         <div className="orders-page__views" role="tablist" aria-label="Orders page section">

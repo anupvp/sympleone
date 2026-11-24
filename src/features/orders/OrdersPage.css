@@ -1,8 +1,21 @@
+.orders-page__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
 .orders-page__head h1 {
   margin: 0;
   font-size: 1.5rem;
   font-weight: 800;
-  color: #312e81;
+  color: #0f172a;
+}
+
+.orders-page__head-main {
+  min-width: 0;
 }
 
 .orders-page__meta {

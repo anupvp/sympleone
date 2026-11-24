@@ -92,11 +92,11 @@ export function DashboardToolbar({
       )}
       <select
         className="dash-select"
-        value={filters.marketplaceId}
-        onChange={(e) => dispatch(setFilters({ marketplaceId: e.target.value }))}
-        aria-label="Marketplaces"
+        value="A21TJRUUN4KGV"
+        onChange={() => dispatch(setFilters({ marketplaceId: 'A21TJRUUN4KGV' }))}
+        aria-label="Marketplace"
       >
-        <option value="all">All Marketplaces</option>
+        <option value="A21TJRUUN4KGV">Amazon</option>
       </select>
       <select className="dash-select" aria-label="Regions" defaultValue="all">
         <option value="all">All Regions</option>
