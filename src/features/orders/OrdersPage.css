@@ -1,6 +1,8 @@
 .orders-page__head h1 {
   margin: 0;
-  font-size: 1.35rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #312e81;
 }
 
 .orders-page__meta {
@@ -16,20 +18,145 @@
 }
 
 .orders-page__view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   border: 1px solid #e8ecf3;
   background: #fff;
-  border-radius: 10px;
-  padding: 0.45rem 0.9rem;
+  border-radius: 12px;
+  padding: 0.5rem 1rem;
   font-size: 0.8125rem;
   font-weight: 600;
   color: #64748b;
   cursor: pointer;
 }
 
+.orders-page__view-btn svg {
+  width: 1rem;
+  height: 1rem;
+}
+
 .orders-page__view-btn--active {
   background: #4338ca;
   border-color: #4338ca;
   color: #fff;
+}
+
+.orders-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin: 0 0 1rem;
+}
+
+@media (max-width: 1100px) {
+  .orders-kpi-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .orders-kpi-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.orders-kpi {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  background: #fff;
+  border: 1px solid #e8ecf3;
+  border-radius: 14px;
+  padding: 0.85rem 0.9rem;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.orders-kpi:hover {
+  border-color: #c7d2fe;
+}
+
+.orders-kpi--active {
+  border-color: #818cf8;
+  box-shadow: 0 0 0 1px #c7d2fe;
+}
+
+.orders-kpi__icon {
+  flex-shrink: 0;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.orders-kpi__icon svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.orders-kpi__icon--blue {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.orders-kpi__icon--amber {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.orders-kpi__icon--orange {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
+.orders-kpi__icon--green {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.orders-kpi__icon--teal {
+  background: #ccfbf1;
+  color: #0f766e;
+}
+
+.orders-kpi__icon--rose {
+  background: #ffe4e6;
+  color: #e11d48;
+}
+
+.orders-kpi__label {
+  margin: 0;
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+}
+
+.orders-kpi__value {
+  margin: 0.2rem 0 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.orders-kpi__change {
+  margin: 0.2rem 0 0;
+  font-size: 0.625rem;
+  font-weight: 600;
+}
+
+.orders-kpi__change.is-up {
+  color: #16a34a;
+}
+
+.orders-kpi__change.is-down {
+  color: #dc2626;
 }
 
 .orders-fulfillment-tabs {
@@ -39,9 +166,48 @@
   margin: 0 0 0.65rem;
 }
 
-.orders-tabs__btn--compact {
+.orders-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid #e8ecf3;
+  background: #fff;
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.orders-pill--compact {
   font-size: 0.6875rem;
-  padding: 0.25rem 0.55rem;
+  padding: 0.28rem 0.6rem;
+}
+
+.orders-pill--active {
+  background: #4338ca;
+  border-color: #4338ca;
+  color: #fff;
+}
+
+.orders-pill__count {
+  min-width: 1.25rem;
+  padding: 0.05rem 0.35rem;
+  border-radius: 999px;
+  background: rgb(15 23 42 / 0.08);
+  font-size: 0.6875rem;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.orders-pill--active .orders-pill__count {
+  background: rgb(255 255 255 / 0.22);
+  color: #fff;
+}
+
+.orders-tabs--secondary {
+  margin-top: -0.35rem;
 }
 
 .orders-page__error {
@@ -62,42 +228,122 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-  margin: 0 0 1rem;
+  margin: 0 0 0.65rem;
 }
 
-.orders-tabs__btn {
-  display: inline-flex;
+.orders-table-panel {
+  background: #fff;
+  border: 1px solid #e8ecf3;
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+  overflow: hidden;
+}
+
+.orders-table-panel__head {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.35rem;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.orders-table-panel__title {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.orders-table-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.orders-toolbar-btn {
   border: 1px solid #e8ecf3;
   background: #fff;
-  border-radius: 999px;
-  padding: 0.3rem 0.7rem;
+  border-radius: 10px;
+  padding: 0.4rem 0.75rem;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #64748b;
+  color: #475569;
   cursor: pointer;
 }
 
-.orders-tabs__btn--active {
-  background: #eef2ff;
-  border-color: #c7d2fe;
-  color: #4338ca;
+.orders-toolbar-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-.orders-tabs__count {
-  min-width: 1.1rem;
-  padding: 0 0.3rem;
-  border-radius: 999px;
-  background: #f1f5f9;
-  font-size: 0.6875rem;
-  line-height: 1.3;
-  text-align: center;
+.orders-toolbar-btn--primary {
+  background: #4338ca;
+  border-color: #4338ca;
+  color: #fff;
 }
 
-.orders-tabs__btn--active .orders-tabs__count {
+.orders-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid #f1f5f9;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.orders-pagination__summary {
+  margin: 0;
+}
+
+.orders-pagination__controls {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.orders-pagination__btn {
+  min-width: 2rem;
+  height: 2rem;
+  border: 1px solid #e8ecf3;
+  border-radius: 8px;
   background: #fff;
-  color: #4338ca;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+}
+
+.orders-pagination__btn--active {
+  background: #4338ca;
+  border-color: #4338ca;
+  color: #fff;
+}
+
+.orders-pagination__btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.orders-pagination__ellipsis {
+  padding: 0 0.25rem;
+}
+
+.orders-pagination__size {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.orders-pagination__size select {
+  border: 1px solid #e8ecf3;
+  border-radius: 8px;
+  padding: 0.25rem 0.4rem;
+  font-size: 0.75rem;
 }
 
 .orders-table__skeleton {
@@ -141,11 +387,13 @@
 }
 
 .orders-table-wrap {
-  background: #fff;
-  border: 1px solid #e8ecf3;
-  border-radius: 14px;
   overflow-x: auto;
-  box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+}
+
+.orders-table-panel .orders-table-wrap {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .orders-table {
@@ -170,9 +418,88 @@
   background: #fafbfc;
 }
 
+.orders-table__check-col {
+  width: 2.25rem;
+}
+
+.orders-table__check {
+  width: 0.95rem;
+  height: 0.95rem;
+  accent-color: #4338ca;
+}
+
 .orders-table__id {
   font-weight: 600;
   color: #4338ca;
+  font-size: 0.8125rem;
+}
+
+.orders-table__amount {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.orders-table__actions {
+  width: 2.5rem;
+  text-align: center;
+}
+
+.orders-row-action {
+  border: none;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.2rem;
+}
+
+.orders-row-action svg {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.orders-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.orders-status-pill__dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.orders-status-pill--shipped,
+.orders-status-pill--delivered {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.orders-status-pill--pending {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.orders-status-pill--partiallyshipped {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.orders-status-pill--canceled {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.orders-status-pill--unfulfillable,
+.orders-status-pill--other {
+  background: #f1f5f9;
+  color: #475569;
 }
 
 .orders-badge {
@@ -246,6 +573,13 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.orders-inventory-panel .orders-table-wrap {
+  background: #fff;
+  border: 1px solid #e8ecf3;
+  border-radius: 14px;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
 }
 
 .orders-inventory-metrics {

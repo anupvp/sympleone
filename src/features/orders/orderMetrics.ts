@@ -55,6 +55,45 @@ export interface OrderOverviewCounts {
   other: number
 }
 
+export type OrderStatusTally = Record<OrderStatusTabId, number>
+
+export function tallyOrderStatusTabs(orders: OrderRow[]): OrderStatusTally {
+  const tally: OrderStatusTally = {
+    pending: 0,
+    pendingavailability: 0,
+    unshipped: 0,
+    partiallyshipped: 0,
+    shipped: 0,
+    delivered: 0,
+    canceled: 0,
+    unfulfillable: 0,
+    invoiceunconfirmed: 0,
+    other: 0,
+  }
+  for (const row of orders) {
+    const tab = orderStatusTabId(row)
+    tally[tab] += 1
+  }
+  return tally
+}
+
+export function statusTabLabel(tab: OrderStatusTabId | 'all'): string {
+  const labels: Record<OrderStatusTabId | 'all', string> = {
+    all: 'All Orders',
+    pending: 'Pending',
+    pendingavailability: 'Pending availability',
+    unshipped: 'Unshipped',
+    partiallyshipped: 'Partially shipped',
+    shipped: 'Shipped',
+    delivered: 'Delivered',
+    canceled: 'Cancelled',
+    unfulfillable: 'Unfulfillable',
+    invoiceunconfirmed: 'Invoice unconfirmed',
+    other: 'Other',
+  }
+  return labels[tab]
+}
+
 export function countOrdersByStatusTab(orders: OrderRow[]): OrderOverviewCounts {
   const tally: Partial<Record<OrderStatusTabId, number>> = {}
   for (const row of orders) {
