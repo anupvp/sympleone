@@ -3,15 +3,15 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { useSellerAccountOptions } from '../dashboard/hooks/useSellerAccountOptions'
 import { setFilters } from '../dashboard/state/dashboardSlice'
 import { formatShortDate, resolveSalesDateRange, todayIsoDate } from '../dashboard/utils/salesPeriodUtils'
+import { fetchSellerMarketplaceContext } from '../amazon/sellerMarketplaceApi'
 import './OrdersContextFilters.css'
-
-const AMAZON_MARKETPLACE_ID = 'A21TJRUUN4KGV'
-const AMAZON_MARKETPLACE_LABEL = 'Amazon'
 
 export function OrdersContextFilters() {
   const dispatch = useAppDispatch()
+  const token = useAppSelector((s) => s.auth.accessToken)
   const filters = useAppSelector((s) => s.dashboard.filters)
   const { needsSeller, options, selectedId, error, setSellerId } = useSellerAccountOptions()
+  const [marketplaceLabel, setMarketplaceLabel] = useState('Amazon')
 
   const popoverId = useId()
   const rangeRef = useRef<HTMLDivElement>(null)
@@ -20,10 +20,23 @@ export function OrdersContextFilters() {
   const [draftTo, setDraftTo] = useState(filters.dateTo)
 
   useEffect(() => {
-    if (filters.marketplaceId !== AMAZON_MARKETPLACE_ID) {
-      dispatch(setFilters({ marketplaceId: AMAZON_MARKETPLACE_ID }))
+    if (!token) {
+      return
     }
-  }, [dispatch, filters.marketplaceId])
+    if (needsSeller && !filters.sellerId?.trim()) {
+      return
+    }
+    void fetchSellerMarketplaceContext(token, filters)
+      .then((ctx) => {
+        setMarketplaceLabel(ctx.marketplace_label)
+        if (ctx.marketplace_id && ctx.marketplace_id !== filters.marketplaceId) {
+          dispatch(setFilters({ marketplaceId: ctx.marketplace_id }))
+        }
+      })
+      .catch(() => {
+        setMarketplaceLabel('Amazon')
+      })
+  }, [token, filters.sellerId, needsSeller, dispatch])
 
   useEffect(() => {
     setDraftFrom(filters.dateFrom)
@@ -73,7 +86,7 @@ export function OrdersContextFilters() {
         </span>
         <span className="orders-context-field__text">
           <span className="orders-context-field__title">Marketplace</span>
-          <span className="orders-context-field__value">{AMAZON_MARKETPLACE_LABEL}</span>
+          <span className="orders-context-field__value">{marketplaceLabel}</span>
         </span>
       </div>
 

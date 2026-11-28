@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { AppShell } from '../../layout/AppShell'
-import { useAppSelector } from '../../app/hooks'
+import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { needsSellerDashboardContext } from '../auth/auth.utils'
 import { resolveSalesDateRange } from '../dashboard/utils/salesPeriodUtils'
 import { OrdersContextFilters } from '../orders/OrdersContextFilters'
 import '../orders/OrdersContextFilters.css'
+import { fetchSellerMarketplaceContext } from '../amazon/sellerMarketplaceApi'
+import { setFilters } from '../dashboard/state/dashboardSlice'
 import {
   fetchProducts,
   type ListingStatusTab,
@@ -85,6 +87,7 @@ function matchesSearch(row: ProductListingRow, q: string) {
 }
 
 export function ProductsPage() {
+  const dispatch = useAppDispatch()
   const token = useAppSelector((s) => s.auth.accessToken)
   const user = useAppSelector((s) => s.auth.user)
   const filters = useAppSelector((s) => s.dashboard.filters)
@@ -113,7 +116,15 @@ export function ProductsPage() {
     setLoading(true)
     setError(null)
     try {
-      const data = await fetchProducts(token, filters)
+      const marketplaceCtx = await fetchSellerMarketplaceContext(token, filters)
+      const activeFilters =
+        marketplaceCtx.marketplace_id !== filters.marketplaceId
+          ? { ...filters, marketplaceId: marketplaceCtx.marketplace_id }
+          : filters
+      if (marketplaceCtx.marketplace_id !== filters.marketplaceId) {
+        dispatch(setFilters({ marketplaceId: marketplaceCtx.marketplace_id }))
+      }
+      const data = await fetchProducts(token, activeFilters)
       setProducts(data.products)
       setSummary(data.summary)
     } catch (e) {
@@ -123,7 +134,7 @@ export function ProductsPage() {
     } finally {
       setLoading(false)
     }
-  }, [token, filters.marketplaceId, filters.sellerId, needsSeller])
+  }, [token, filters, dispatch, needsSeller])
 
   useEffect(() => {
     void load()

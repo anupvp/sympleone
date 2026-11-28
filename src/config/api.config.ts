@@ -80,6 +80,7 @@ export const API_CONFIG = {
     amazon: {
       connect: '/amazon/connect',
       callbackComplete: '/amazon/callback/complete',
+      marketplaceContext: '/amazon/marketplace-context',
     },
     public: {
       sellerCount: '/public/seller-count',
