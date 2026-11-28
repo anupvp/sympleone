@@ -49,6 +49,9 @@ export const API_CONFIG = {
     inventory: {
       fba: '/inventory/fba',
     },
+    products: {
+      list: '/v1/products',
+    },
     productPerformance: {
       sync: '/v1/product-performance/sync',
       top: '/v1/product-performance/top',

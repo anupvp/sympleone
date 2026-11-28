@@ -21,6 +21,7 @@ import { ReportsLayout } from './features/reports/ReportsLayout'
 import { ReportsOverviewPage } from './features/reports/ReportsOverviewPage'
 import { TransactionReportPage } from './features/reports/TransactionReportPage'
 import { FbaInventoryPage } from './features/inventory/FbaInventoryPage'
+import { ProductsPage } from './features/products/ProductsPage'
 import { DashboardPage } from './features/dashboard/DashboardPage'
 
 function AppSection({ title }: { title: string }) {
@@ -118,7 +119,7 @@ export default function App() {
           }
         />
         <Route path="/app/orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
-        <Route path="/app/products" element={<ProtectedRoute><AppSection title="Products" /></ProtectedRoute>} />
+        <Route path="/app/products" element={<ProtectedRoute><ProductsPage /></ProtectedRoute>} />
         <Route
           path="/app/inventory"
           element={<ProtectedRoute><Navigate to="/app/fba-inventory" replace /></ProtectedRoute>}
