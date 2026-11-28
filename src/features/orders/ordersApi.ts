@@ -30,6 +30,26 @@ export interface OrderRow {
   number_of_items_unshipped: number
 }
 
+export interface OrderLineItem {
+  order_item_id: string
+  asin: string | null
+  seller_sku: string | null
+  title: string | null
+  quantity_ordered: number
+  quantity_shipped: number
+  item_price: OrderMoney | null
+}
+
+export interface OrderDetail extends OrderRow {
+  buyer_name: string | null
+  ship_address_line1: string | null
+  ship_address_line2: string | null
+  ship_postal_code: string | null
+  ship_country: string | null
+  last_update_date: string | null
+  items: OrderLineItem[]
+}
+
 export interface OrdersFulfillmentSummary {
   total: number
   fba: number
@@ -56,6 +76,37 @@ function ordersQuery(filters: DashboardFilters) {
     params.set('sellerId', filters.sellerId.trim())
   }
   return `?${params.toString()}`
+}
+
+function orderDetailQuery(filters: DashboardFilters) {
+  const params = new URLSearchParams({
+    marketplaceId: filters.marketplaceId || 'all',
+  })
+  if (filters.sellerId?.trim()) {
+    params.set('sellerId', filters.sellerId.trim())
+  }
+  return `?${params.toString()}`
+}
+
+export async function fetchOrderDetail(
+  token: string,
+  filters: DashboardFilters,
+  amazonOrderId: string,
+): Promise<OrderDetail> {
+  const encodedId = encodeURIComponent(amazonOrderId)
+  const data = await apiRequest<OrderDetail>({
+    method: 'GET',
+    endpoint: `${API_CONFIG.endpoints.orders}/${encodedId}${orderDetailQuery(filters)}`,
+    token,
+    rawPath: true,
+  })
+  const fulfillment_type = data.fulfillment_type ?? inferFulfillmentType(data)
+  return {
+    ...data,
+    fulfillment_type,
+    fulfillment_label: data.fulfillment_label ?? labelForType(fulfillment_type),
+    items: data.items ?? [],
+  }
 }
 
 export async function fetchOrders(token: string, filters: DashboardFilters): Promise<OrdersListResponse> {

@@ -8,11 +8,14 @@ import { OrdersContextFilters } from './OrdersContextFilters'
 import { fetchStatCards } from '../dashboard/api/dashboardApi'
 import { fetchFbaInventory, type FbaInventoryResponse } from '../inventory/fbaInventoryApi'
 import {
+  fetchOrderDetail,
   fetchOrders,
+  type OrderDetail,
   type OrderFulfillmentType,
   type OrderRow,
   type OrdersFulfillmentSummary,
 } from './ordersApi'
+import { OrderDetailModal } from './OrderDetailModal'
 import { orderStatusTabId, tallyOrderStatusTabs, type OrderStatusTabId } from './orderMetrics'
 import { OrderStatusBadge } from './OrderStatusBadge'
 import {
@@ -21,6 +24,7 @@ import {
   type OrdersKpiId,
 } from './OrdersSummaryKpis'
 import { downloadOrdersCsv } from './ordersExport'
+import './OrderDetailModal.css'
 import './OrdersContextFilters.css'
 import './OrdersPage.css'
 
@@ -200,6 +204,11 @@ export function OrdersPage() {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState<(typeof PAGE_SIZES)[number]>(25)
   const [ordersChangePercent, setOrdersChangePercent] = useState<number | null>(null)
+  const [detailOpen, setDetailOpen] = useState(false)
+  const [detailPreview, setDetailPreview] = useState<OrderRow | null>(null)
+  const [detailData, setDetailData] = useState<OrderDetail | null>(null)
+  const [detailLoading, setDetailLoading] = useState(false)
+  const [detailError, setDetailError] = useState<string | null>(null)
 
   const [inventory, setInventory] = useState<FbaInventoryResponse | null>(null)
   const [inventoryLoading, setInventoryLoading] = useState(false)
@@ -323,6 +332,39 @@ export function OrdersPage() {
       : ''
 
   const exportFilename = `orders-${filters.dateFrom ?? 'export'}-to-${filters.dateTo ?? 'export'}.csv`
+
+  const closeOrderDetail = useCallback(() => {
+    setDetailOpen(false)
+    setDetailPreview(null)
+    setDetailData(null)
+    setDetailError(null)
+    setDetailLoading(false)
+  }, [])
+
+  const openOrderDetail = useCallback(
+    (row: OrderRow) => {
+      if (!token) {
+        return
+      }
+      setDetailPreview(row)
+      setDetailData(null)
+      setDetailError(null)
+      setDetailOpen(true)
+      setDetailLoading(true)
+      void fetchOrderDetail(token, filters, row.amazon_order_id)
+        .then((data) => {
+          setDetailData(data)
+          setDetailError(null)
+        })
+        .catch((e) => {
+          setDetailError(e instanceof Error ? e.message : 'Could not load order details')
+        })
+        .finally(() => {
+          setDetailLoading(false)
+        })
+    },
+    [token, filters],
+  )
 
   return (
     <AppShell>
@@ -518,7 +560,13 @@ export function OrdersPage() {
                             <td className="orders-table__amount">{formatTotal(row)}</td>
                             <td>{buyerLabel(row)}</td>
                             <td className="orders-table__actions">
-                              <button type="button" className="orders-row-action" title="View order" aria-label="View order">
+                              <button
+                                type="button"
+                                className="orders-row-action"
+                                title="View order"
+                                aria-label={`View order ${row.amazon_order_id}`}
+                                onClick={() => openOrderDetail(row)}
+                              >
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
                                   <path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6-10-6-10-6z" />
                                   <circle cx="12" cy="12" r="2.5" />
@@ -679,6 +727,15 @@ export function OrdersPage() {
           </div>
         )}
       </div>
+
+      <OrderDetailModal
+        open={detailOpen}
+        preview={detailPreview}
+        detail={detailData}
+        loading={detailLoading}
+        error={detailError}
+        onClose={closeOrderDetail}
+      />
     </AppShell>
   )
 }
